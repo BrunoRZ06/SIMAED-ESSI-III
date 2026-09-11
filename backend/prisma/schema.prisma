@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model ReferenceMatrix {
+  id             String   @id @default(uuid())
+  code           String   @unique
+  name           String
+  year           Int
+  evaluationType String
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  descriptors Descriptor[]
+}
+
+model Stage {
+  id        String   @id @default(uuid())
+  code      String   @unique
+  name      String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  descriptors Descriptor[]
+}
+
+model Discipline {
+  id        String   @id @default(uuid())
+  code      String   @unique
+  name      String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  descriptors Descriptor[]
+}
+
+model Descriptor {
+  id          String   @id @default(uuid())
+  code        String
+  description String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  matrixId     String
+  stageId      String
+  disciplineId String
+
+  matrix     ReferenceMatrix @relation(fields: [matrixId], references: [id], onDelete: Cascade)
+  stage      Stage           @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  discipline Discipline      @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+
+  @@unique([matrixId, stageId, disciplineId, code])
+  @@index([stageId, disciplineId])
+}
