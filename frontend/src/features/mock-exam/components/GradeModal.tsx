@@ -15,14 +15,12 @@ import type { Stage } from "@/src/services/mockExamApi";
 interface GradeModalProps {
   visible: boolean;
   selectedGrade: string;
-
   stages: Stage[];
   loading: boolean;
   error: string;
-
   onSelect: (grade: string) => void;
+  onRetry: () => void;
   onClose: () => void;
-
   scale?: number;
 }
 
@@ -33,6 +31,7 @@ export const GradeModal: React.FC<GradeModalProps> = ({
   loading,
   error,
   onSelect,
+  onRetry,
   onClose,
   scale = 1,
 }) => {
@@ -91,16 +90,34 @@ export const GradeModal: React.FC<GradeModalProps> = ({
           )}
 
           {!loading && error !== "" && (
-            <Text
-              style={[
-                styles.errorText,
-                {
-                  fontSize: 13 * scale,
-                },
-              ]}
-            >
-              {error}
-            </Text>
+            <View style={styles.statusContainer}>
+              <Text
+                style={[
+                  styles.errorText,
+                  {
+                    fontSize: 13 * scale,
+                  },
+                ]}
+              >
+                {error}
+              </Text>
+
+              <TouchableOpacity
+                style={styles.retryButton}
+                onPress={onRetry}
+              >
+                <Text
+                  style={[
+                    styles.retryButtonText,
+                    {
+                      fontSize: 13 * scale,
+                    },
+                  ]}
+                >
+                  Tentar novamente
+                </Text>
+              </TouchableOpacity>
+            </View>
           )}
 
           {!loading &&
@@ -243,5 +260,18 @@ const styles = StyleSheet.create({
   itemTextSelected: {
     color: "#286D9B",
     fontWeight: "700",
+  },
+
+  retryButton: {
+    borderWidth: 1,
+    borderColor: "#286D9B",
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+
+  retryButtonText: {
+    color: "#286D9B",
+    fontWeight: "600",
   },
 });

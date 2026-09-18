@@ -17,7 +17,6 @@ export async function getStagesByDiscipline(
           },
 
           matrix: {
-            code: "SAEPE_2025_SOMATIVA",
             isActive: true,
           },
         },

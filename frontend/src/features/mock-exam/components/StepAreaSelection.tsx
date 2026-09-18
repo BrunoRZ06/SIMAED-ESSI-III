@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import {
@@ -13,7 +14,7 @@ import {
 
 import { PrimaryButton } from "@/src/features/onboarding/components/PrimaryButton";
 import { OptionCard } from "./OptionCard";
-import { SubjectArea } from "../types/mock-exam";
+import { SubjectArea } from "../../../types/mock-exam";
 
 import {
   Discipline,
@@ -39,25 +40,30 @@ export const StepAreaSelection: React.FC<
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    async function loadDisciplines() {
-      try {
-        setLoading(true);
-        setError("");
+  const loadDisciplines = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError("");
 
-        const data = await getDisciplines();
+      const data = await getDisciplines();
 
-        setDisciplines(data);
-      } catch (error) {
-        console.error(error);
-        setError("Não foi possível carregar as disciplinas.");
-      } finally {
-        setLoading(false);
-      }
+      setDisciplines(data);
+    } catch (error) {
+      console.error(error);
+
+      setDisciplines([]);
+
+      setError(
+        "Não foi possível carregar as disciplinas."
+      );
+    } finally {
+      setLoading(false);
     }
-
-    loadDisciplines();
   }, []);
+
+  useEffect(() => {
+    loadDisciplines();
+  }, [loadDisciplines]);
 
   const getAreaFromCode = (
     code: string
@@ -73,7 +79,9 @@ export const StepAreaSelection: React.FC<
     return null;
   };
 
-  const getDisciplinePresentation = (code: string) => {
+  const getDisciplinePresentation = (
+    code: string
+  ) => {
     if (code === "MATHEMATICS") {
       return {
         icon: Calculator,
@@ -120,18 +128,30 @@ export const StepAreaSelection: React.FC<
       </Text>
 
       {loading && (
-        <View style={styles.loadingContainer}>
+        <View style={styles.statusContainer}>
           <ActivityIndicator />
-          <Text style={styles.loadingText}>
+
+          <Text style={styles.statusText}>
             Carregando disciplinas...
           </Text>
         </View>
       )}
 
       {!loading && error !== "" && (
-        <Text style={styles.errorText}>
-          {error}
-        </Text>
+        <View style={styles.statusContainer}>
+          <Text style={styles.errorText}>
+            {error}
+          </Text>
+
+          <TouchableOpacity
+            style={styles.retryButton}
+            onPress={loadDisciplines}
+          >
+            <Text style={styles.retryButtonText}>
+              Tentar novamente
+            </Text>
+          </TouchableOpacity>
+        </View>
       )}
 
       {!loading &&
@@ -244,14 +264,14 @@ const styles = StyleSheet.create({
     color: "#68677F",
   },
 
-  loadingContainer: {
+  statusContainer: {
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 24,
-    gap: 8,
+    gap: 10,
   },
 
-  loadingText: {
+  statusText: {
     color: "#64748B",
     fontSize: 13,
   },
@@ -259,7 +279,21 @@ const styles = StyleSheet.create({
   errorText: {
     color: "#DC2626",
     fontSize: 13,
-    marginBottom: 16,
+    textAlign: "center",
+  },
+
+  retryButton: {
+    borderWidth: 1,
+    borderColor: "#286D9B",
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+
+  retryButtonText: {
+    color: "#286D9B",
+    fontWeight: "600",
+    fontSize: 13,
   },
 
   infoBanner: {

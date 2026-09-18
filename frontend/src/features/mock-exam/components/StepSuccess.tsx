@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { BookOpen, Check, CheckCircle2, Info } from "lucide-react-native";
 
 import { PrimaryButton } from "@/src/features/onboarding/components/PrimaryButton";
-import { MockExamConfig } from "../types/mock-exam";
+import { MockExamConfig } from "../../../types/mock-exam";
 
 interface StepSuccessProps {
   config: MockExamConfig;

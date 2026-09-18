@@ -5,11 +5,13 @@ export async function getAllActiveDisciplines() {
     where: {
       isActive: true,
     },
+
     select: {
       id: true,
       code: true,
       name: true,
     },
+
     orderBy: {
       name: "asc",
     },

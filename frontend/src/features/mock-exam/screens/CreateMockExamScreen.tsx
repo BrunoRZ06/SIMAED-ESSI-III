@@ -13,7 +13,7 @@ import { useResponsiveScale } from "@/src/hooks/useResponsiveScale";
 import { StepAreaSelection } from "../components/StepAreaSelection";
 import { StepConfiguration } from "../components/StepConfiguration";
 import { StepSuccess } from "../components/StepSuccess";
-import { MockExamConfig } from "../types/mock-exam";
+import { MockExamConfig } from "../../../types/mock-exam";
 
 export const CreateMockExamScreen = () => {
   const router = useRouter();

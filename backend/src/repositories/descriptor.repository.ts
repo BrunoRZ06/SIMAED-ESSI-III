@@ -19,7 +19,6 @@ export async function getDescriptorsByConfiguration(
       },
 
       matrix: {
-        code: "SAEPE_2025_SOMATIVA",
         isActive: true,
       },
     },
