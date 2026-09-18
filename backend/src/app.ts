@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 
 import disciplineRouter from "./routes/discipline.routes.js";
+import mockExamRouter from "./routes/mock-exam.routes.js";
 
 export const app = express();
 
@@ -17,4 +18,9 @@ app.get("/health", (req, res) => {
 app.use(
   "/disciplines",
   disciplineRouter
+);
+
+app.use(
+  "/mock-exams",
+  mockExamRouter
 );
