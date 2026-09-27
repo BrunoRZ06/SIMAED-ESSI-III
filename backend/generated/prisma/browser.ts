@@ -37,3 +37,8 @@ export type Discipline = Prisma.DisciplineModel
  * 
  */
 export type Descriptor = Prisma.DescriptorModel
+/**
+ * Model MockExamGenerationRequest
+ * 
+ */
+export type MockExamGenerationRequest = Prisma.MockExamGenerationRequestModel

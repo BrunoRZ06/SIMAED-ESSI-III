@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
@@ -38,6 +39,8 @@ interface StepConfigurationProps {
 
   onChangeArea: () => void;
 
+  isGenerating?: boolean;
+
   scale?: number;
 }
 
@@ -48,6 +51,7 @@ export const StepConfiguration: React.FC<
   onChangeConfig,
   onGenerate,
   onChangeArea,
+  isGenerating = false,
   scale = 1,
 }) => {
   const [
@@ -102,6 +106,10 @@ export const StepConfiguration: React.FC<
   const handleSelectGrade = (
     gradeCode: string
   ) => {
+    if (isGenerating) {
+      return;
+    }
+
     if (
       gradeCode !== config.grade
     ) {
@@ -117,6 +125,10 @@ export const StepConfiguration: React.FC<
   };
 
   const handleOpenSkills = () => {
+    if (isGenerating) {
+      return;
+    }
+
     if (!config.grade) {
       setValidationError(
         "Selecione o ano/série antes de escolher os descritores."
@@ -133,6 +145,10 @@ export const StepConfiguration: React.FC<
   const handleToggleSkill = (
     descriptorId: string
   ) => {
+    if (isGenerating) {
+      return;
+    }
+
     const alreadySelected =
       config.skills.includes(
         descriptorId
@@ -159,6 +175,10 @@ export const StepConfiguration: React.FC<
   const handleRemoveSkill = (
     descriptorId: string
   ) => {
+    if (isGenerating) {
+      return;
+    }
+
     onChangeConfig({
       skills:
         config.skills.filter(
@@ -169,6 +189,10 @@ export const StepConfiguration: React.FC<
   };
 
   const handleGenerate = () => {
+    if (isGenerating) {
+      return;
+    }
+
     if (!config.area) {
       setValidationError(
         "Selecione uma disciplina."
@@ -223,85 +247,98 @@ export const StepConfiguration: React.FC<
           Configurar simulado
         </Text>
 
-        <SelectRow
-          label="Área"
-          value={areaLabel}
-          icon={BookOpen}
-          onPress={onChangeArea}
-          scale={scale}
-        />
+        <View
+          pointerEvents={
+            isGenerating
+              ? "none"
+              : "auto"
+          }
+          style={
+            isGenerating
+              ? styles.disabledContent
+              : undefined
+          }
+        >
+          <SelectRow
+            label="Área"
+            value={areaLabel}
+            icon={BookOpen}
+            onPress={onChangeArea}
+            scale={scale}
+          />
 
-        <SelectRow
-          label="Ano/Série"
-          value={gradeLabel}
-          icon={GraduationCap}
-          onPress={() => {
-            setValidationError("");
+          <SelectRow
+            label="Ano/Série"
+            value={gradeLabel}
+            icon={GraduationCap}
+            onPress={() => {
+              setValidationError("");
 
-            setIsGradeModalOpen(
-              true
-            );
-          }}
-          scale={scale}
-        />
+              setIsGradeModalOpen(
+                true
+              );
+            }}
+            scale={scale}
+          />
 
-        <QuestionCountSection
-          value={
-            config.questionCount
-          }
-          onChange={(
-            questionCount
-          ) =>
-            onChangeConfig({
-              questionCount,
-            })
-          }
-          scale={scale}
-        />
+          <QuestionCountSection
+            value={
+              config.questionCount
+            }
+            onChange={(
+              questionCount
+            ) =>
+              onChangeConfig({
+                questionCount,
+              })
+            }
+            scale={scale}
+          />
 
-        <DifficultySection
-          value={
-            config.difficulty
-          }
-          onChange={(
-            difficulty
-          ) =>
-            onChangeConfig({
-              difficulty,
-            })
-          }
-          scale={scale}
-        />
+          <DifficultySection
+            value={
+              config.difficulty
+            }
+            onChange={(
+              difficulty
+            ) =>
+              onChangeConfig({
+                difficulty,
+              })
+            }
+            scale={scale}
+          />
 
-        <DescriptorSection
-          descriptors={
-            descriptors
-          }
-          selectedSkills={
-            config.skills
-          }
-          onOpen={
-            handleOpenSkills
-          }
-          onRemove={
-            handleRemoveSkill
-          }
-          scale={scale}
-        />
+          <DescriptorSection
+            descriptors={
+              descriptors
+            }
+            selectedSkills={
+              config.skills
+            }
+            onOpen={
+              handleOpenSkills
+            }
+            onRemove={
+              handleRemoveSkill
+            }
+            scale={scale}
+          />
 
-        <QuestionTypeSection
-          value={
-            config.questionType
-          }
-          onChange={(
-            questionType
-          ) =>
-            onChangeConfig({
-              questionType,
-            })
-          }
-          scale={scale}
-        />
+          <QuestionTypeSection
+            value={
+              config.questionType
+            }
+            onChange={(
+              questionType
+            ) =>
+              onChangeConfig({
+                questionType,
+              })
+            }
+            scale={scale}
+          />
+        </View>
 
         {validationError !==
           "" && (
@@ -330,13 +367,59 @@ export const StepConfiguration: React.FC<
             },
           ]}
         >
-          <PrimaryButton
-            title="✨ Gerar simulado"
-            onPress={
-              handleGenerate
+          {isGenerating && (
+            <View
+              style={[
+                styles.loadingContainer,
+                {
+                  marginBottom:
+                    8 * scale,
+                },
+              ]}
+            >
+              <ActivityIndicator
+                size="small"
+              />
+
+              <Text
+                style={[
+                  styles.loadingText,
+                  {
+                    fontSize:
+                      13 * scale,
+                  },
+                ]}
+              >
+                Enviando solicitação...
+              </Text>
+            </View>
+          )}
+
+          <View
+            pointerEvents={
+              isGenerating
+                ? "none"
+                : "auto"
             }
-            scale={scale}
-          />
+            style={{
+              opacity:
+                isGenerating
+                  ? 0.7
+                  : 1,
+            }}
+          >
+            <PrimaryButton
+              title={
+                isGenerating
+                  ? "Gerando..."
+                  : "✨ Gerar simulado"
+              }
+              onPress={
+                handleGenerate
+              }
+              scale={scale}
+            />
+          </View>
         </View>
       </ScrollView>
 
@@ -411,6 +494,10 @@ const styles = StyleSheet.create({
     color: "#090B2B",
   },
 
+  disabledContent: {
+    opacity: 0.7,
+  },
+
   validationError: {
     color: "#DC2626",
     fontWeight: "500",
@@ -418,4 +505,16 @@ const styles = StyleSheet.create({
   },
 
   generateContainer: {},
+
+  loadingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+  },
+
+  loadingText: {
+    color: "#64748B",
+    fontWeight: "500",
+  },
 });

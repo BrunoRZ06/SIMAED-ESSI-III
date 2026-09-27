@@ -400,7 +400,8 @@ export const ModelName = {
   ReferenceMatrix: 'ReferenceMatrix',
   Stage: 'Stage',
   Discipline: 'Discipline',
-  Descriptor: 'Descriptor'
+  Descriptor: 'Descriptor',
+  MockExamGenerationRequest: 'MockExamGenerationRequest'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -416,7 +417,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "referenceMatrix" | "stage" | "discipline" | "descriptor"
+    modelProps: "referenceMatrix" | "stage" | "discipline" | "descriptor" | "mockExamGenerationRequest"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -716,6 +717,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    MockExamGenerationRequest: {
+      payload: Prisma.$MockExamGenerationRequestPayload<ExtArgs>
+      fields: Prisma.MockExamGenerationRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MockExamGenerationRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MockExamGenerationRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MockExamGenerationRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MockExamGenerationRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.MockExamGenerationRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MockExamGenerationRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MockExamGenerationRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MockExamGenerationRequestPayload>
+        }
+        findMany: {
+          args: Prisma.MockExamGenerationRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MockExamGenerationRequestPayload>[]
+        }
+        create: {
+          args: Prisma.MockExamGenerationRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MockExamGenerationRequestPayload>
+        }
+        createMany: {
+          args: Prisma.MockExamGenerationRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MockExamGenerationRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MockExamGenerationRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.MockExamGenerationRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MockExamGenerationRequestPayload>
+        }
+        update: {
+          args: Prisma.MockExamGenerationRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MockExamGenerationRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.MockExamGenerationRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MockExamGenerationRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MockExamGenerationRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MockExamGenerationRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.MockExamGenerationRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MockExamGenerationRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.MockExamGenerationRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMockExamGenerationRequest>
+        }
+        groupBy: {
+          args: Prisma.MockExamGenerationRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MockExamGenerationRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MockExamGenerationRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MockExamGenerationRequestCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -808,6 +883,25 @@ export const DescriptorScalarFieldEnum = {
 export type DescriptorScalarFieldEnum = (typeof DescriptorScalarFieldEnum)[keyof typeof DescriptorScalarFieldEnum]
 
 
+export const MockExamGenerationRequestScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  status: 'status',
+  disciplineCode: 'disciplineCode',
+  stageCode: 'stageCode',
+  descriptorIds: 'descriptorIds',
+  questionCount: 'questionCount',
+  difficulty: 'difficulty',
+  questionType: 'questionType',
+  configHash: 'configHash',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MockExamGenerationRequestScalarFieldEnum = (typeof MockExamGenerationRequestScalarFieldEnum)[keyof typeof MockExamGenerationRequestScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -822,6 +916,14 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
 
@@ -876,6 +978,20 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'GenerationStatus'
+ */
+export type EnumGenerationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GenerationStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'GenerationStatus[]'
+ */
+export type ListEnumGenerationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GenerationStatus[]'>
     
 
 
@@ -1047,6 +1163,7 @@ export type GlobalOmitConfig = {
   stage?: Prisma.StageOmit
   discipline?: Prisma.DisciplineOmit
   descriptor?: Prisma.DescriptorOmit
+  mockExamGenerationRequest?: Prisma.MockExamGenerationRequestOmit
 }
 
 /* Types for Logging */

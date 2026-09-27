@@ -54,7 +54,8 @@ export const ModelName = {
   ReferenceMatrix: 'ReferenceMatrix',
   Stage: 'Stage',
   Discipline: 'Discipline',
-  Descriptor: 'Descriptor'
+  Descriptor: 'Descriptor',
+  MockExamGenerationRequest: 'MockExamGenerationRequest'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -126,6 +127,25 @@ export const DescriptorScalarFieldEnum = {
 export type DescriptorScalarFieldEnum = (typeof DescriptorScalarFieldEnum)[keyof typeof DescriptorScalarFieldEnum]
 
 
+export const MockExamGenerationRequestScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  status: 'status',
+  disciplineCode: 'disciplineCode',
+  stageCode: 'stageCode',
+  descriptorIds: 'descriptorIds',
+  questionCount: 'questionCount',
+  difficulty: 'difficulty',
+  questionType: 'questionType',
+  configHash: 'configHash',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MockExamGenerationRequestScalarFieldEnum = (typeof MockExamGenerationRequestScalarFieldEnum)[keyof typeof MockExamGenerationRequestScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -140,4 +160,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

@@ -1,11 +1,7 @@
 import { prisma } from "../lib/prisma.js";
 
 import type { MockExamConfigInput } from "../schemas/mock-exam.schema.js";
-
-export interface ValidationError {
-  field: string;
-  message: string;
-}
+import type { ValidationError } from "../types/validation-error.js";
 
 export async function validateParameterAvailability(
   config: MockExamConfigInput
@@ -24,11 +20,13 @@ export async function validateParameterAvailability(
 
   if (!discipline) {
     errors.push({
+      code: "NOT_FOUND",
       field: "disciplineCode",
       message: "Disciplina não encontrada.",
     });
   } else if (!discipline.isActive) {
     errors.push({
+      code: "INACTIVE",
       field: "disciplineCode",
       message: "Disciplina indisponível.",
     });
@@ -46,11 +44,13 @@ export async function validateParameterAvailability(
 
   if (!stage) {
     errors.push({
+      code: "NOT_FOUND",
       field: "stageCode",
       message: "Série não encontrada.",
     });
   } else if (!stage.isActive) {
     errors.push({
+      code: "INACTIVE",
       field: "stageCode",
       message: "Série indisponível.",
     });
@@ -80,6 +80,7 @@ export async function validateParameterAvailability(
 
     if (!descriptor) {
       errors.push({
+        code: "NOT_FOUND",
         field: "descriptorIds",
         message: `Habilidade não encontrada: ${descriptorId}`,
       });
@@ -89,6 +90,7 @@ export async function validateParameterAvailability(
 
     if (!descriptor.isActive) {
       errors.push({
+        code: "INACTIVE",
         field: "descriptorIds",
         message: `Habilidade indisponível: ${descriptorId}`,
       });
@@ -129,6 +131,7 @@ export async function validateDisciplineStageCompatibility(
   if (!compatibleDescriptor) {
     return [
       {
+        code: "INCOMPATIBLE",
         field: "stageCode",
         message:
           "A série informada não é compatível com a disciplina selecionada.",
@@ -182,6 +185,7 @@ export async function validateDescriptorCompatibility(
   for (const descriptorId of config.descriptorIds) {
     if (!compatibleIds.has(descriptorId)) {
       errors.push({
+        code: "INCOMPATIBLE",
         field: "descriptorIds",
         message: `Habilidade incompatível com a disciplina e série informadas: ${descriptorId}`,
       });
@@ -189,4 +193,31 @@ export async function validateDescriptorCompatibility(
   }
 
   return errors;
+}
+
+export async function validateMockExamConfiguration(
+  config: MockExamConfigInput
+): Promise<ValidationError[]> {
+  const availabilityErrors =
+    await validateParameterAvailability(config);
+
+  if (availabilityErrors.length > 0) {
+    return availabilityErrors;
+  }
+
+  const disciplineStageErrors =
+    await validateDisciplineStageCompatibility(config);
+
+  if (disciplineStageErrors.length > 0) {
+    return disciplineStageErrors;
+  }
+
+  const descriptorErrors =
+    await validateDescriptorCompatibility(config);
+
+  if (descriptorErrors.length > 0) {
+    return descriptorErrors;
+  }
+
+  return [];
 }

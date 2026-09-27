@@ -17,7 +17,13 @@ export const mockExamConfigSchema = z.object({
     )
     .min(1, {
       message: "Selecione pelo menos uma habilidade.",
-    }),
+    })
+    .refine(
+      (ids) => new Set(ids).size === ids.length,
+      {
+        message: "Não envie habilidades duplicadas.",
+      }
+    ),
 
   questionCount: z
     .number({

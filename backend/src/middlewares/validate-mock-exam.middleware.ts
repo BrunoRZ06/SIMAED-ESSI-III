@@ -1,22 +1,21 @@
 import type {
+  NextFunction,
   Request,
   Response,
 } from "express";
 
 import { mockExamConfigSchema } from "../schemas/mock-exam.schema.js";
-import { createMockExamGenerationRequest } from "../services/mock-exam-generation.service.js";
 import { validateMockExamConfiguration } from "../services/mock-exam-validation.service.js";
 import { mapZodErrors } from "../utils/zod-validation-error.js";
 import { sendValidationErrors } from "../utils/validation-response.js";
 
-export async function validateMockExamConfig(
+export async function validateMockExamRequest(
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) {
   const result =
-    mockExamConfigSchema.safeParse(
-      req.body
-    );
+    mockExamConfigSchema.safeParse(req.body);
 
   if (!result.success) {
     return sendValidationErrors(
@@ -37,24 +36,8 @@ export async function validateMockExamConfig(
     );
   }
 
-  return res.status(200).json({
-    valid: true,
-    data: result.data,
-  });
-}
+  res.locals.mockExamConfig =
+    result.data;
 
-export async function requestMockExamGeneration(
-  req: Request,
-  res: Response
-) {
-  const request =
-    await createMockExamGenerationRequest();
-
-  return res.status(202).json({
-    accepted: true,
-    message:
-      "Solicitação de geração criada.",
-    requestId: request.requestId,
-    status: request.status,
-  });
+  next();
 }

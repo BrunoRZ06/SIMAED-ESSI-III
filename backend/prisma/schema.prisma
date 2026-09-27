@@ -7,6 +7,13 @@ datasource db {
   provider = "postgresql"
 }
 
+enum GenerationStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
 model ReferenceMatrix {
   id             String   @id @default(uuid())
   code           String   @unique
@@ -60,4 +67,26 @@ model Descriptor {
 
   @@unique([matrixId, stageId, disciplineId, code])
   @@index([stageId, disciplineId])
+}
+
+model MockExamGenerationRequest {
+  id             Int              @id @default(autoincrement())
+  requestId      String           @unique @default(uuid())
+  status         GenerationStatus @default(PENDING)
+
+  disciplineCode String
+  stageCode      String
+  descriptorIds  String[]
+  questionCount  Int
+  difficulty     String
+  questionType   String
+
+  configHash     String
+  errorMessage   String?
+
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@index([configHash, createdAt])
+  @@index([status])
 }
