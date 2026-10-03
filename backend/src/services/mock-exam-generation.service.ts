@@ -8,8 +8,15 @@ import type { MockExamConfigInput } from "../schemas/mock-exam.schema.js";
 
 export async function createMockExamGenerationRequest(
   config: MockExamConfigInput,
-  configHash: string
+  configHash: string,
+  simulateFailure = false
 ) {
+  if (simulateFailure) {
+    throw new Error(
+      "Falha simulada na criação da solicitação"
+    );
+  }
+
   return prisma.mockExamGenerationRequest.create({
     data: {
       disciplineCode:
