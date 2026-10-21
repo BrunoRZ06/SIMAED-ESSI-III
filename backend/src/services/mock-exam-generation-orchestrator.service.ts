@@ -2,26 +2,18 @@ import {
   createHash,
 } from "node:crypto";
 
-import {
-  GenerationStatus,
-} from "../../generated/prisma/client.js";
-
-import type { MockExamConfigInput } from "../schemas/mock-exam.schema.js";
+import type {
+  MockExamConfigInput,
+} from "../schemas/mock-exam.schema.js";
 
 import {
   createMockExamGenerationRequest,
   findRecentGenerationRequest,
-  markMockExamGenerationAsFailed,
-  updateMockExamGenerationStatus,
 } from "./mock-exam-generation.service.js";
 
 import {
-  dispatchMockExamGeneration,
-} from "./mock-exam-generator.service.js";
-
-import {
-  MockExamGenerationStartError,
-} from "../errors/mock-exam-generation-start.error.js";
+  processMockExamGeneration,
+} from "./mock-exam-generation-processor.service.js";
 
 const DUPLICATE_WINDOW_MS =
   30_000;
@@ -60,12 +52,15 @@ function createConfigHash(
 }
 
 export async function orchestrateMockExamGeneration(
-  config: MockExamConfigInput
+  config: MockExamConfigInput,
+  simulateCreationFailure = false
 ) {
   const configHash =
-    createConfigHash(config);
+    createConfigHash(
+      config
+    );
 
-  const duplicateSince =
+  const since =
     new Date(
       Date.now() -
         DUPLICATE_WINDOW_MS
@@ -74,10 +69,12 @@ export async function orchestrateMockExamGeneration(
   const existingRequest =
     await findRecentGenerationRequest(
       configHash,
-      duplicateSince
+      since
     );
 
-  if (existingRequest) {
+  if (
+    existingRequest
+  ) {
     return {
       requestId:
         existingRequest.requestId,
@@ -92,45 +89,22 @@ export async function orchestrateMockExamGeneration(
   const request =
     await createMockExamGenerationRequest(
       config,
-      configHash
+      configHash,
+      simulateCreationFailure
     );
 
-  try {
-    await dispatchMockExamGeneration({
-      requestId:
-        request.requestId,
+  void processMockExamGeneration(
+    request.requestId,
+    config
+  );
 
-      config,
-    });
-
-    const processingRequest =
-      await updateMockExamGenerationStatus(
-        request.requestId,
-        GenerationStatus.PROCESSING
-      );
-
-    return {
-      requestId:
-        processingRequest.requestId,
-
-      status:
-        processingRequest.status,
-
-      duplicate: false,
-    };
-  } catch (error) {
-    const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "Erro desconhecido";
-
-    await markMockExamGenerationAsFailed(
+  return {
+    requestId:
       request.requestId,
-      errorMessage
-    ).catch(() => undefined);
 
-    throw new MockExamGenerationStartError(
-      request.requestId
-    );
-  }
+    status:
+      request.status,
+
+    duplicate: false,
+  };
 }

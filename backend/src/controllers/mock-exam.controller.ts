@@ -1,7 +1,3 @@
-import {
-  createHash,
-} from "node:crypto";
-
 import type {
   Request,
   Response,
@@ -16,8 +12,8 @@ import type {
 } from "../schemas/mock-exam.schema.js";
 
 import {
-  createMockExamGenerationRequest,
-} from "../services/mock-exam-generation.service.js";
+  orchestrateMockExamGeneration,
+} from "../services/mock-exam-generation-orchestrator.service.js";
 
 import {
   validateMockExamConfiguration,
@@ -30,39 +26,6 @@ import {
 import {
   sendValidationErrors,
 } from "../utils/validation-response.js";
-
-function createConfigHash(
-  config: MockExamConfigInput
-) {
-  const normalizedConfig = {
-    disciplineCode:
-      config.disciplineCode,
-
-    stageCode:
-      config.stageCode,
-
-    descriptorIds: [
-      ...config.descriptorIds,
-    ].sort(),
-
-    questionCount:
-      config.questionCount,
-
-    difficulty:
-      config.difficulty,
-
-    questionType:
-      config.questionType,
-  };
-
-  return createHash("sha256")
-    .update(
-      JSON.stringify(
-        normalizedConfig
-      )
-    )
-    .digest("hex");
-}
 
 export async function validateMockExamConfig(
   req: Request,
@@ -85,7 +48,9 @@ export async function validateMockExamConfig(
       result.data
     );
 
-  if (errors.length > 0) {
+  if (
+    errors.length > 0
+  ) {
     return sendValidationErrors(
       res,
       errors
@@ -94,7 +59,8 @@ export async function validateMockExamConfig(
 
   return res.status(200).json({
     valid: true,
-    data: result.data,
+    data:
+      result.data,
   });
 }
 
@@ -106,9 +72,6 @@ export async function requestMockExamGeneration(
     res.locals
       .mockExamConfig as MockExamConfigInput;
 
-  const configHash =
-    createConfigHash(config);
-
   const simulateFailure =
     process.env.NODE_ENV !==
       "production" &&
@@ -117,21 +80,28 @@ export async function requestMockExamGeneration(
     ] === "true";
 
   try {
-    const request =
-      await createMockExamGenerationRequest(
+    const result =
+      await orchestrateMockExamGeneration(
         config,
-        configHash,
         simulateFailure
       );
 
     return res.status(202).json({
       accepted: true,
+
+      duplicate:
+        result.duplicate,
+
       message:
-        "Solicitação de geração criada.",
+        result.duplicate
+          ? "Esta solicitação já foi recebida."
+          : "Solicitação de geração criada.",
+
       requestId:
-        request.requestId,
+        result.requestId,
+
       status:
-        request.status,
+        result.status,
     });
   } catch (error) {
     console.error(
@@ -141,8 +111,10 @@ export async function requestMockExamGeneration(
 
     return res.status(500).json({
       accepted: false,
+
       code:
         "GENERATION_REQUEST_CREATION_FAILED",
+
       message:
         "Não foi possível criar a solicitação de geração.",
     });
