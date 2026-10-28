@@ -5,12 +5,7 @@ import React from "react";
 export default function CreateMockExamRoute() {
   return (
     <>
-      <Stack.Screen
-        options={{
-          headerShown: false,
-          animation: "slide_from_bottom",
-        }}
-      />
+      <Stack.Screen options={{ headerShown: false, animation: "slide_from_bottom" }} />
       <CreateMockExamScreen />
     </>
   );

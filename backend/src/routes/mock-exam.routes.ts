@@ -3,6 +3,7 @@ import {
 } from "express";
 
 import {
+  getMockExamGenerationResult,
   requestMockExamGeneration,
   validateMockExamConfig,
 } from "../controllers/mock-exam.controller.js";
@@ -23,6 +24,11 @@ mockExamRouter.post(
   "/generate",
   validateMockExamRequest,
   requestMockExamGeneration
+);
+
+mockExamRouter.get(
+  "/generate/:requestId",
+  getMockExamGenerationResult
 );
 
 export default mockExamRouter;

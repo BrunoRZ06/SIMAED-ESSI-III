@@ -19,7 +19,6 @@ export const IntroductionScreen = ({
   onLoginPress,
 }: IntroductionScreenProps) => {
   const { isTablet, scale: tabletScale, width, height } = useResponsiveScale();
-  console.log("DEBUG RESPONSIVE:", { width, height, isTablet, tabletScale });
 
   return (
     <SafeAreaView style={styles.container}>

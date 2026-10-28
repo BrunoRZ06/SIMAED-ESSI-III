@@ -1,13 +1,20 @@
 import type {
-  GeneratedMockExam,
-} from "../ai/schemas/generated-question.schema.js";
-
-import type {
   MockExamGenerationInput,
 } from "../ai/types/ai-generation.js";
 
+type ValidationMockExam = {
+  questions: Array<{
+    alternatives: Array<{ id: "A" | "B" | "C" | "D" | "E"; text: string }>;
+    correctAnswer: "A" | "B" | "C" | "D" | "E";
+    descriptorId: string;
+    difficulty: "easy" | "medium" | "hard" | null;
+    statement: string;
+    sourceArchivedQuestionId?: string | null;
+  }>;
+};
+
 export function validateGeneratedMockExamStructure(
-  exam: GeneratedMockExam
+  exam: ValidationMockExam
 ) {
   for (
     const question
@@ -24,32 +31,19 @@ export function validateGeneratedMockExamStructure(
         alternativeIds
       );
 
-    if (
-      uniqueAlternativeIds.size !==
-      4
-    ) {
+    const expectedIds = question.sourceArchivedQuestionId && alternativeIds.length === 5
+      ? ["A", "B", "C", "D", "E"]
+      : ["A", "B", "C", "D"];
+
+    if (uniqueAlternativeIds.size !== expectedIds.length) {
       throw new Error(
         "A questão possui alternativas duplicadas."
       );
     }
 
-    const expectedIds = [
-      "A",
-      "B",
-      "C",
-      "D",
-    ];
-
     const hasAllAlternatives =
       expectedIds.every(
-        (id) =>
-          uniqueAlternativeIds.has(
-            id as
-              | "A"
-              | "B"
-              | "C"
-              | "D"
-          )
+        (id) => uniqueAlternativeIds.has(id as "A" | "B" | "C" | "D" | "E")
       );
 
     if (
@@ -82,7 +76,7 @@ export function validateGeneratedMockExamStructure(
 }
 
 export function validateGeneratedQuestionCount(
-  exam: GeneratedMockExam,
+  exam: ValidationMockExam,
   input: MockExamGenerationInput
 ) {
   if (
@@ -96,7 +90,7 @@ export function validateGeneratedQuestionCount(
 }
 
 export function validateGeneratedCorrectAnswers(
-  exam: GeneratedMockExam
+  exam: ValidationMockExam
 ) {
   for (
     const question
@@ -120,7 +114,7 @@ export function validateGeneratedCorrectAnswers(
 }
 
 export function validateGeneratedDescriptors(
-  exam: GeneratedMockExam,
+  exam: ValidationMockExam,
   input: MockExamGenerationInput
 ) {
   const validDescriptorIds =
@@ -148,7 +142,7 @@ export function validateGeneratedDescriptors(
 }
 
 export function validateGeneratedDifficulty(
-  exam: GeneratedMockExam,
+  exam: ValidationMockExam,
   input: MockExamGenerationInput
 ) {
   for (
@@ -156,6 +150,7 @@ export function validateGeneratedDifficulty(
     of exam.questions
   ) {
     if (
+      !question.sourceArchivedQuestionId &&
       question.difficulty !==
       input.difficulty
     ) {
@@ -166,8 +161,37 @@ export function validateGeneratedDifficulty(
   }
 }
 
+function normalizeQuestionStatement(statement: string) {
+  return statement
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+export function validateUniqueQuestions(exam: ValidationMockExam) {
+  const sourceIds = new Set<string>();
+  const normalizedStatements = new Set<string>();
+
+  for (const question of exam.questions) {
+    if (question.sourceArchivedQuestionId) {
+      if (sourceIds.has(question.sourceArchivedQuestionId)) {
+        throw new Error("Uma questão existente foi incluída mais de uma vez.");
+      }
+      sourceIds.add(question.sourceArchivedQuestionId);
+    }
+
+    const normalizedStatement = normalizeQuestionStatement(question.statement);
+    if (normalizedStatements.has(normalizedStatement)) {
+      throw new Error("O simulado contém questões com enunciados duplicados.");
+    }
+    normalizedStatements.add(normalizedStatement);
+  }
+}
+
 export function validateGeneratedMockExam(
-  exam: GeneratedMockExam,
+  exam: ValidationMockExam,
   input: MockExamGenerationInput
 ) {
   validateGeneratedMockExamStructure(
@@ -192,4 +216,6 @@ export function validateGeneratedMockExam(
     exam,
     input
   );
+
+  validateUniqueQuestions(exam);
 }

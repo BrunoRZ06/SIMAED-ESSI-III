@@ -74,16 +74,27 @@ cd frontend
 npm install
 ```
 
-Crie o arquivo `frontend/.env` apontando para a API. No celular, use o IP da sua máquina na rede local, não `localhost`:
+Crie o arquivo `frontend/.env`:
 
 ```env
-EXPO_PUBLIC_API_URL=http://192.168.0.10:3000
+EXPO_PUBLIC_API_URL=http://localhost:3000
 ```
+
+Em desenvolvimento, a aplicação adapta esse endereço automaticamente: no navegador usa o host da página Expo; no celular usa o host anunciado pelo Expo. Assim, `localhost` continua funcionando na web e não é enviado incorretamente ao celular.
+
+Se a API estiver em outra máquina, ou se cada plataforma precisar de um endereço diferente, configure uma ou ambas as variáveis opcionais. Esses endereços são usados exatamente como informados:
+
+```env
+EXPO_PUBLIC_API_URL_WEB=http://192.168.0.10:3000
+EXPO_PUBLIC_API_URL_NATIVE=http://192.168.0.10:3000
+```
+
+Inicie a API e o Expo em modo LAN; para usar um celular físico, mantenha-o na mesma rede Wi-Fi do computador e permita conexões TCP na porta `3000` no firewall. A API já escuta em `0.0.0.0:3000`.
 
 Inicie o app:
 
 ```bash
-npx expo start        # depois: "a" para Android, "i" para iOS, "w" para web
+npx expo start        # depois: "a" para Android, "i" para iOS ou "w" para web
 ```
 
 ## Endpoints da API

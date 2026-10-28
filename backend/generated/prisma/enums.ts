@@ -17,3 +17,19 @@ export const GenerationStatus = {
 } as const
 
 export type GenerationStatus = (typeof GenerationStatus)[keyof typeof GenerationStatus]
+
+
+export const ArchiveReviewStatus = {
+  NEEDS_REVIEW: 'NEEDS_REVIEW',
+  REVIEWED: 'REVIEWED'
+} as const
+
+export type ArchiveReviewStatus = (typeof ArchiveReviewStatus)[keyof typeof ArchiveReviewStatus]
+
+
+export const QuestionSourceType = {
+  HISTORICAL: 'HISTORICAL',
+  ORIGINAL_PRACTICE: 'ORIGINAL_PRACTICE'
+} as const
+
+export type QuestionSourceType = (typeof QuestionSourceType)[keyof typeof QuestionSourceType]

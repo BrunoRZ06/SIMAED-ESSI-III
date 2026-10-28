@@ -27,6 +27,7 @@ import {
   getDescriptors,
   getStages,
   requestMockExamGeneration,
+  waitForMockExamGeneration,
 } from "@/src/services/mockExamApi";
 
 import {
@@ -44,6 +45,7 @@ import {
 import {
   MockExamConfig,
 } from "../../../types/mock-exam";
+import { saveMockExamToHistory } from "../services/mockExamHistoryService";
 
 export const CreateMockExamScreen =
   () => {
@@ -69,6 +71,10 @@ export const CreateMockExamScreen =
       setIsGenerating,
     ] =
       useState(false);
+
+    const [generationRequestId, setGenerationRequestId] = useState<string | null>(null);
+    const [generationPhase, setGenerationPhase] = useState<"sending" | "processing">("sending");
+    const [generationError, setGenerationError] = useState<string | null>(null);
 
     const [
       mockExamConfig,
@@ -101,6 +107,7 @@ export const CreateMockExamScreen =
       updates:
         Partial<MockExamConfig>
     ) => {
+      setGenerationError(null);
       setMockExamConfig(
         (prev) => ({
           ...prev,
@@ -222,26 +229,21 @@ export const CreateMockExamScreen =
         setIsGenerating(
           true
         );
+        setGenerationError(null);
+        setGenerationPhase("sending");
 
         try {
+          const generationConfig = {
+            disciplineCode,
+            stageCode: mockExamConfig.grade,
+            descriptorIds: mockExamConfig.skills,
+            questionCount: mockExamConfig.questionCount,
+            difficulty: mockExamConfig.difficulty,
+            questionType: mockExamConfig.questionType,
+          };
           const result =
             await requestMockExamGeneration({
-              disciplineCode,
-
-              stageCode:
-                mockExamConfig.grade,
-
-              descriptorIds:
-                mockExamConfig.skills,
-
-              questionCount:
-                mockExamConfig.questionCount,
-
-              difficulty:
-                mockExamConfig.difficulty,
-
-              questionType:
-                mockExamConfig.questionType,
+              ...generationConfig,
             });
 
           if (
@@ -253,22 +255,41 @@ export const CreateMockExamScreen =
                   (error) =>
                     error.message
                 )
-                .join("\n") ??
+                .join("\n")
+                .trim() ||
               result.message;
 
-            Alert.alert(
-              "Não foi possível gerar o simulado",
-              message
-            );
+            setGenerationError(message);
 
             return;
           }
 
+          setGenerationPhase("processing");
+
+          let historySaveFailed = false;
+          try {
+            await saveMockExamToHistory(result.requestId, generationConfig);
+          } catch {
+            historySaveFailed = true;
+          }
+
+          await waitForMockExamGeneration(
+              result.requestId
+            );
+
+          setGenerationRequestId(result.requestId);
           setCurrentStep(3);
-        } catch {
-          Alert.alert(
-            "Erro",
-            "Não foi possível iniciar a geração. Tente novamente."
+          if (historySaveFailed) {
+            Alert.alert(
+              "Simulado gerado",
+              "Não foi possível salvar este simulado no histórico deste dispositivo.",
+            );
+          }
+        } catch (error) {
+          setGenerationError(
+            error instanceof Error
+              ? error.message
+              : "Não foi possível concluir a geração. Tente novamente."
           );
         } finally {
           setIsGenerating(
@@ -399,6 +420,10 @@ export const CreateMockExamScreen =
               isGenerating={
                 isGenerating
               }
+              generationError={
+                generationError
+              }
+              generationPhase={generationPhase}
               scale={
                 tabletScale
               }
@@ -412,9 +437,10 @@ export const CreateMockExamScreen =
                 mockExamConfig
               }
               onOpenMaterials={() =>
-                router.push(
-                  "/(tabs)"
-                )
+                generationRequestId && router.push({
+                  pathname: "/mock-exam/materials",
+                  params: { requestId: generationRequestId },
+                } as never)
               }
               scale={
                 tabletScale

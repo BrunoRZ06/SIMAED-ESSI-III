@@ -21,6 +21,8 @@ const prompt =
 
     difficulty: "easy",
 
+    questionType: "new",
+
     descriptors: [
       {
         id:

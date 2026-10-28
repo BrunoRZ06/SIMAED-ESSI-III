@@ -9,6 +9,11 @@ export type GenerationDifficulty =
   | "medium"
   | "hard";
 
+export type GenerationQuestionType =
+  | "previous"
+  | "new"
+  | "combined";
+
 export interface MockExamGenerationInput {
   requestId: string;
 
@@ -26,6 +31,9 @@ export interface MockExamGenerationInput {
 
   difficulty:
     GenerationDifficulty;
+
+  questionType:
+    GenerationQuestionType;
 
   descriptors:
     GenerationDescriptor[];

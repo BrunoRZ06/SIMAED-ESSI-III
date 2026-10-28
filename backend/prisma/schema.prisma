@@ -14,6 +14,73 @@ enum GenerationStatus {
   FAILED
 }
 
+enum ArchiveReviewStatus {
+  NEEDS_REVIEW
+  REVIEWED
+}
+
+enum QuestionSourceType {
+  HISTORICAL
+  ORIGINAL_PRACTICE
+}
+
+model ArchivedQuestionSource {
+  id               String             @id @default(uuid())
+  code             String             @unique
+  title            String
+  sourceType       QuestionSourceType @default(HISTORICAL)
+  year             Int?
+  bookletCode      String?
+  stageCode        String
+  originalFileName String?
+  sourceNotes      String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  questions ArchivedQuestion[]
+
+  @@unique([year, bookletCode, stageCode])
+}
+
+model ArchivedQuestion {
+  id                 String              @id @default(uuid())
+  sourceId           String
+  number             Int
+  itemCode           String
+  disciplineCode     String
+  descriptorCode     String?
+  statement          String
+  stimulusText       String?
+  stimulusAssetPath  String?
+  stimulusAltText    String?
+  pdfPageNumber      Int?
+  correctAlternative String?
+  answerSource       String?
+  reviewStatus       ArchiveReviewStatus @default(NEEDS_REVIEW)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  source       ArchivedQuestionSource        @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  alternatives ArchivedQuestionAlternative[]
+  generatedQuestions GeneratedQuestion[]
+
+  @@unique([sourceId, number])
+  @@index([disciplineCode, descriptorCode, reviewStatus])
+  @@index([sourceId, pdfPageNumber])
+}
+
+model ArchivedQuestionAlternative {
+  id         String   @id @default(uuid())
+  questionId String
+  label      String
+  text       String
+  createdAt  DateTime @default(now())
+
+  question ArchivedQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, label])
+}
+
 model ReferenceMatrix {
   id             String   @id @default(uuid())
   code           String   @unique
@@ -61,32 +128,73 @@ model Descriptor {
   stageId      String
   disciplineId String
 
-  matrix     ReferenceMatrix @relation(fields: [matrixId], references: [id], onDelete: Cascade)
-  stage      Stage           @relation(fields: [stageId], references: [id], onDelete: Cascade)
-  discipline Discipline      @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+  matrix             ReferenceMatrix     @relation(fields: [matrixId], references: [id], onDelete: Cascade)
+  stage              Stage               @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  discipline         Discipline          @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+  generatedQuestions GeneratedQuestion[]
 
   @@unique([matrixId, stageId, disciplineId, code])
   @@index([stageId, disciplineId])
 }
 
 model MockExamGenerationRequest {
-  id             Int              @id @default(autoincrement())
-  requestId      String           @unique @default(uuid())
-  status         GenerationStatus @default(PENDING)
+  id        Int              @id @default(autoincrement())
+  requestId String           @unique @default(uuid())
+  status    GenerationStatus @default(PENDING)
 
   disciplineCode String
   stageCode      String
   descriptorIds  String[]
   questionCount  Int
-  difficulty     String
+  difficulty     String?
   questionType   String
 
-  configHash     String
-  errorMessage   String?
+  configHash   String
+  errorMessage String?
 
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  questions GeneratedQuestion[]
 
   @@index([configHash, createdAt])
   @@index([status])
+}
+
+model GeneratedQuestion {
+  id                  String   @id @default(uuid())
+  generationRequestId String
+  descriptorId        String
+  position            Int
+  statement           String
+  correctAnswer       String
+  difficulty          String?
+  questionType        String
+  stimulusText        String?
+  stimulusAssetPath   String?
+  stimulusAltText     String?
+  sourceArchivedQuestionId String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  generationRequest MockExamGenerationRequest      @relation(fields: [generationRequestId], references: [requestId], onDelete: Cascade)
+  descriptor        Descriptor                     @relation(fields: [descriptorId], references: [id], onDelete: Restrict)
+  sourceArchivedQuestion ArchivedQuestion?           @relation(fields: [sourceArchivedQuestionId], references: [id], onDelete: SetNull)
+  alternatives      GeneratedQuestionAlternative[]
+
+  @@unique([generationRequestId, position])
+  @@index([descriptorId])
+  @@index([sourceArchivedQuestionId])
+}
+
+model GeneratedQuestionAlternative {
+  id         String   @id @default(uuid())
+  questionId String
+  label      String
+  text       String
+  createdAt  DateTime @default(now())
+
+  question GeneratedQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, label])
 }

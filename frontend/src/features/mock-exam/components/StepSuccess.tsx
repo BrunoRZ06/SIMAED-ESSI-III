@@ -1,6 +1,6 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { BookOpen, Check, CheckCircle2, Info } from "lucide-react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { BookOpen, Check, CircleCheck, FileText, ScanLine } from "lucide-react-native";
 
 import { PrimaryButton } from "@/src/features/onboarding/components/PrimaryButton";
 import { MockExamConfig } from "../../../types/mock-exam";
@@ -16,13 +16,6 @@ export const StepSuccess: React.FC<StepSuccessProps> = ({
   onOpenMaterials,
   scale = 1,
 }) => {
-  const checklist = [
-    "Versão do aluno",
-    "Cartão-resposta",
-    "Gabarito",
-    "Arquivos para exportação",
-  ];
-
   const areaLabel =
     config.area === "portuguese"
       ? "Língua Portuguesa"
@@ -32,6 +25,7 @@ export const StepSuccess: React.FC<StepSuccessProps> = ({
 
   return (
     <View style={styles.container}>
+      <ScrollView style={styles.results} contentContainerStyle={styles.resultsContent}>
       <View style={[styles.successBadge, { width: 76 * scale, height: 76 * scale, borderRadius: 38 * scale }]}>
         <Check size={42 * scale} color="#FFFFFF" />
       </View>
@@ -41,7 +35,7 @@ export const StepSuccess: React.FC<StepSuccessProps> = ({
       </Text>
 
       <Text style={[styles.subtitle, { fontSize: 14 * scale, marginTop: 8 * scale, marginBottom: 24 * scale }]}>
-        Criamos automaticamente todos os materiais para você aplicar e corrigir.
+        Criamos automaticamente os materiais para você aplicar e corrigir.
       </Text>
 
       <View style={[styles.card, { padding: 18 * scale, borderRadius: 16 * scale }]}>
@@ -59,34 +53,39 @@ export const StepSuccess: React.FC<StepSuccessProps> = ({
           </View>
         </View>
 
-        <View style={styles.checklist}>
-          {checklist.map((item) => (
-            <View key={item} style={styles.checkItem}>
-              <CheckCircle2 size={20 * scale} color="#10B981" />
-              <Text style={[styles.checkText, { fontSize: 14 * scale }]}>{item}</Text>
-            </View>
-          ))}
+        <View style={styles.materialList}>
+          <MaterialReadyRow icon={<FileText size={16 * scale} color="#166534" />} title="Versão do aluno" scale={scale} />
+          <MaterialReadyRow icon={<ScanLine size={16 * scale} color="#166534" />} title="Cartão-resposta" scale={scale} />
+          <MaterialReadyRow icon={<CircleCheck size={16 * scale} color="#166534" />} title="Gabarito" scale={scale} />
+          <MaterialReadyRow icon={<CircleCheck size={16 * scale} color="#166534" />} title="Arquivos para exportação" scale={scale} />
         </View>
-      </View>
-
-      <View style={[styles.infoBox, { padding: 12 * scale, borderRadius: 12 * scale, marginTop: "auto" }]}>
-        <Info size={20 * scale} color="#286D9B" />
-        <Text style={[styles.infoText, { fontSize: 13 * scale }]}>
-          Você usou 1 de 3 testes gratuitos para visitantes.
-        </Text>
       </View>
 
       <View style={{ marginTop: 16 * scale }}>
         <PrimaryButton title="Abrir materiais" onPress={onOpenMaterials} scale={scale} />
       </View>
+      </ScrollView>
     </View>
   );
 };
 
+const MaterialReadyRow = ({ icon, title, scale }: { icon: React.ReactNode; title: string; scale: number }) => (
+  <View style={styles.materialRow}>
+    {icon}
+    <Text style={[styles.materialText, { fontSize: 13 * scale }]}>{title}</Text>
+  </View>
+);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  results: {
+    flex: 1,
+  },
+  resultsContent: {
     alignItems: "center",
+    paddingBottom: 16,
   },
   successBadge: {
     backgroundColor: "#286D9B",
@@ -139,31 +138,16 @@ const styles = StyleSheet.create({
   cardSubtitle: {
     color: "#68677F",
   },
-  checklist: {
-    gap: 10,
+  materialList: {
+    gap: 12,
   },
-  checkItem: {
+  materialRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 9,
   },
-  checkText: {
-    fontWeight: "500",
-    color: "#334155",
-  },
-  infoBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#E0F2FE",
-    borderWidth: 1,
-    borderColor: "#BAE6FD",
-    gap: 10,
-    width: "100%",
-    marginBottom: 16,
-  },
-  infoText: {
-    flex: 1,
-    color: "#0369A1",
+  materialText: {
+    color: "#111827",
     fontWeight: "500",
   },
 });

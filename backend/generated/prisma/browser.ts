@@ -18,6 +18,21 @@ export { Prisma }
 export * as $Enums from './enums.js'
 export * from './enums.js';
 /**
+ * Model ArchivedQuestionSource
+ * 
+ */
+export type ArchivedQuestionSource = Prisma.ArchivedQuestionSourceModel
+/**
+ * Model ArchivedQuestion
+ * 
+ */
+export type ArchivedQuestion = Prisma.ArchivedQuestionModel
+/**
+ * Model ArchivedQuestionAlternative
+ * 
+ */
+export type ArchivedQuestionAlternative = Prisma.ArchivedQuestionAlternativeModel
+/**
  * Model ReferenceMatrix
  * 
  */
@@ -42,3 +57,13 @@ export type Descriptor = Prisma.DescriptorModel
  * 
  */
 export type MockExamGenerationRequest = Prisma.MockExamGenerationRequestModel
+/**
+ * Model GeneratedQuestion
+ * 
+ */
+export type GeneratedQuestion = Prisma.GeneratedQuestionModel
+/**
+ * Model GeneratedQuestionAlternative
+ * 
+ */
+export type GeneratedQuestionAlternative = Prisma.GeneratedQuestionAlternativeModel

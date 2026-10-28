@@ -6,6 +6,8 @@ import {
   generatedMockExamJsonSchema,
 } from "../schemas/generated-question.schema.js";
 
+import { TransientAIError } from "../../errors/transient-ai.error.js";
+
 import type {
   AIClient,
 } from "./ai-client.js";
@@ -15,6 +17,10 @@ const AI_TIMEOUT_MS =
 
 const MAX_ATTEMPTS =
   4;
+
+const FALLBACK_MODEL =
+  process.env.GEMINI_FALLBACK_MODEL ??
+  "gemini-3.6-flash";
 
 const INITIAL_RETRY_DELAY_MS =
   1_000;
@@ -48,35 +54,38 @@ function getStatusCode(
   return undefined;
 }
 
-function isRetryableError(
+function getTransientErrorCode(
   error: unknown
 ) {
-  const status =
-    getStatusCode(error);
+  const status = getStatusCode(error);
 
-  if (
-    status === 429 ||
-    status === 500 ||
-    status === 502 ||
-    status === 503 ||
-    status === 504
-  ) {
-    return true;
+  if (status === 429) return "RATE_LIMIT" as const;
+  if ([500, 502, 503, 504].includes(status ?? 0)) {
+    return "UNAVAILABLE" as const;
   }
 
   if (
     error instanceof Error &&
-    (
-      error.name ===
-        "TimeoutError" ||
-      error.name ===
-        "AbortError"
-    )
+    (error.name === "TimeoutError" || error.name === "AbortError")
   ) {
-    return true;
+    return "TIMEOUT" as const;
   }
 
-  return false;
+  if (
+    error instanceof TypeError ||
+    (error instanceof Error &&
+      /fetch failed|failed to fetch|network|ECONN|ENOTFOUND|EAI_AGAIN|socket|connection reset|connection refused/i.test(error.message))
+  ) {
+    return "CONNECTION" as const;
+  }
+
+  return null;
+}
+
+function isRetryableError(
+  error: unknown
+) {
+  return getTransientErrorCode(error) !== null;
 }
 
 export class GeminiAIClient
@@ -111,6 +120,29 @@ export class GeminiAIClient
   async generate(
     prompt: string
   ): Promise<string> {
+    try {
+      return await this.generateWithModel(prompt, this.model);
+    } catch (error) {
+      if (getStatusCode(error) !== 503 || this.model === FALLBACK_MODEL) {
+        throw this.toUserFacingError(error);
+      }
+
+      console.warn(
+        `Modelo ${this.model} indisponível após ${MAX_ATTEMPTS} tentativas; alternando para ${FALLBACK_MODEL}.`,
+      );
+
+      try {
+        return await this.generateWithModel(prompt, FALLBACK_MODEL);
+      } catch (fallbackError) {
+        throw this.toUserFacingError(fallbackError);
+      }
+    }
+  }
+
+  private async generateWithModel(
+    prompt: string,
+    model: string,
+  ): Promise<string> {
     for (
       let attempt = 1;
       attempt <= MAX_ATTEMPTS;
@@ -120,7 +152,7 @@ export class GeminiAIClient
         const response =
           await this.client.models.generateContent({
             model:
-              this.model,
+              model,
 
             contents:
               prompt,
@@ -182,35 +214,25 @@ export class GeminiAIClient
                 "AbortError"
             )
           ) {
-            throw new Error(
+            throw new TransientAIError(
+              "TIMEOUT",
               "Timeout na comunicação com a IA."
             );
           }
 
-          const status =
-            getStatusCode(
-              error
-            );
+          const transientCode = getTransientErrorCode(error);
+          if (transientCode) {
+            if (getStatusCode(error) === 503) {
+              throw error;
+            }
 
-          if (
-            status === 503
-          ) {
-            throw new Error(
-              "Serviço de IA temporariamente indisponível."
-            );
-          }
-
-          if (
-            status === 429
-          ) {
-            throw new Error(
-              "Limite temporário de requisições da IA atingido."
+            throw new TransientAIError(
+              transientCode,
+              this.getTransientErrorMessage(transientCode),
             );
           }
 
-          throw new Error(
-            "Falha na comunicação com o serviço de IA."
-          );
+          throw error;
         }
 
         const delay =
@@ -234,5 +256,34 @@ export class GeminiAIClient
     throw new Error(
       "Falha na comunicação com o serviço de IA."
     );
+  }
+
+  private toUserFacingError(error: unknown) {
+    if (error instanceof TransientAIError) {
+      return error;
+    }
+
+    if (error instanceof Error && error.message === "A IA não retornou conteúdo.") {
+      return error;
+    }
+
+    const transientCode = getTransientErrorCode(error);
+    if (transientCode) {
+      return new TransientAIError(
+        transientCode,
+        this.getTransientErrorMessage(transientCode),
+      );
+    }
+
+    return new Error("Falha na comunicação com o serviço de IA.");
+  }
+
+  private getTransientErrorMessage(code: NonNullable<ReturnType<typeof getTransientErrorCode>>) {
+    if (code === "TIMEOUT") return "Timeout na comunicação com a IA.";
+    if (code === "RATE_LIMIT") return "Limite temporário de requisições da IA atingido.";
+    if (code === "UNAVAILABLE") {
+      return "Serviço de IA temporariamente indisponível nos modelos principal e alternativo.";
+    }
+    return "Falha de conexão com o serviço de IA.";
   }
 }

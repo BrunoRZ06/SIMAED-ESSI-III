@@ -31,8 +31,8 @@ export * from "./enums.js"
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more ReferenceMatrices
- * const referenceMatrices = await prisma.referenceMatrix.findMany()
+ * // Fetch zero or more ArchivedQuestionSources
+ * const archivedQuestionSources = await prisma.archivedQuestionSource.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -41,6 +41,21 @@ export const PrismaClient = $Class.getPrismaClientClass()
 export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts extends Prisma.PrismaClientOptions["omit"] = Prisma.PrismaClientOptions["omit"], ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = $Class.PrismaClient<LogOpts, OmitOpts, ExtArgs>
 export { Prisma }
 
+/**
+ * Model ArchivedQuestionSource
+ * 
+ */
+export type ArchivedQuestionSource = Prisma.ArchivedQuestionSourceModel
+/**
+ * Model ArchivedQuestion
+ * 
+ */
+export type ArchivedQuestion = Prisma.ArchivedQuestionModel
+/**
+ * Model ArchivedQuestionAlternative
+ * 
+ */
+export type ArchivedQuestionAlternative = Prisma.ArchivedQuestionAlternativeModel
 /**
  * Model ReferenceMatrix
  * 
@@ -66,3 +81,13 @@ export type Descriptor = Prisma.DescriptorModel
  * 
  */
 export type MockExamGenerationRequest = Prisma.MockExamGenerationRequestModel
+/**
+ * Model GeneratedQuestion
+ * 
+ */
+export type GeneratedQuestion = Prisma.GeneratedQuestionModel
+/**
+ * Model GeneratedQuestionAlternative
+ * 
+ */
+export type GeneratedQuestionAlternative = Prisma.GeneratedQuestionAlternativeModel

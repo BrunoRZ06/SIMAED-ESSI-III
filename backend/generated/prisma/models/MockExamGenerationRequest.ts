@@ -235,7 +235,7 @@ export type MockExamGenerationRequestGroupByOutputType = {
   stageCode: string
   descriptorIds: string[]
   questionCount: number
-  difficulty: string
+  difficulty: string | null
   questionType: string
   configHash: string
   errorMessage: string | null
@@ -274,12 +274,13 @@ export type MockExamGenerationRequestWhereInput = {
   stageCode?: Prisma.StringFilter<"MockExamGenerationRequest"> | string
   descriptorIds?: Prisma.StringNullableListFilter<"MockExamGenerationRequest">
   questionCount?: Prisma.IntFilter<"MockExamGenerationRequest"> | number
-  difficulty?: Prisma.StringFilter<"MockExamGenerationRequest"> | string
+  difficulty?: Prisma.StringNullableFilter<"MockExamGenerationRequest"> | string | null
   questionType?: Prisma.StringFilter<"MockExamGenerationRequest"> | string
   configHash?: Prisma.StringFilter<"MockExamGenerationRequest"> | string
   errorMessage?: Prisma.StringNullableFilter<"MockExamGenerationRequest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"MockExamGenerationRequest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"MockExamGenerationRequest"> | Date | string
+  questions?: Prisma.GeneratedQuestionListRelationFilter
 }
 
 export type MockExamGenerationRequestOrderByWithRelationInput = {
@@ -290,12 +291,13 @@ export type MockExamGenerationRequestOrderByWithRelationInput = {
   stageCode?: Prisma.SortOrder
   descriptorIds?: Prisma.SortOrder
   questionCount?: Prisma.SortOrder
-  difficulty?: Prisma.SortOrder
+  difficulty?: Prisma.SortOrderInput | Prisma.SortOrder
   questionType?: Prisma.SortOrder
   configHash?: Prisma.SortOrder
   errorMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  questions?: Prisma.GeneratedQuestionOrderByRelationAggregateInput
 }
 
 export type MockExamGenerationRequestWhereUniqueInput = Prisma.AtLeast<{
@@ -309,12 +311,13 @@ export type MockExamGenerationRequestWhereUniqueInput = Prisma.AtLeast<{
   stageCode?: Prisma.StringFilter<"MockExamGenerationRequest"> | string
   descriptorIds?: Prisma.StringNullableListFilter<"MockExamGenerationRequest">
   questionCount?: Prisma.IntFilter<"MockExamGenerationRequest"> | number
-  difficulty?: Prisma.StringFilter<"MockExamGenerationRequest"> | string
+  difficulty?: Prisma.StringNullableFilter<"MockExamGenerationRequest"> | string | null
   questionType?: Prisma.StringFilter<"MockExamGenerationRequest"> | string
   configHash?: Prisma.StringFilter<"MockExamGenerationRequest"> | string
   errorMessage?: Prisma.StringNullableFilter<"MockExamGenerationRequest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"MockExamGenerationRequest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"MockExamGenerationRequest"> | Date | string
+  questions?: Prisma.GeneratedQuestionListRelationFilter
 }, "id" | "requestId">
 
 export type MockExamGenerationRequestOrderByWithAggregationInput = {
@@ -325,7 +328,7 @@ export type MockExamGenerationRequestOrderByWithAggregationInput = {
   stageCode?: Prisma.SortOrder
   descriptorIds?: Prisma.SortOrder
   questionCount?: Prisma.SortOrder
-  difficulty?: Prisma.SortOrder
+  difficulty?: Prisma.SortOrderInput | Prisma.SortOrder
   questionType?: Prisma.SortOrder
   configHash?: Prisma.SortOrder
   errorMessage?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -349,7 +352,7 @@ export type MockExamGenerationRequestScalarWhereWithAggregatesInput = {
   stageCode?: Prisma.StringWithAggregatesFilter<"MockExamGenerationRequest"> | string
   descriptorIds?: Prisma.StringNullableListFilter<"MockExamGenerationRequest">
   questionCount?: Prisma.IntWithAggregatesFilter<"MockExamGenerationRequest"> | number
-  difficulty?: Prisma.StringWithAggregatesFilter<"MockExamGenerationRequest"> | string
+  difficulty?: Prisma.StringNullableWithAggregatesFilter<"MockExamGenerationRequest"> | string | null
   questionType?: Prisma.StringWithAggregatesFilter<"MockExamGenerationRequest"> | string
   configHash?: Prisma.StringWithAggregatesFilter<"MockExamGenerationRequest"> | string
   errorMessage?: Prisma.StringNullableWithAggregatesFilter<"MockExamGenerationRequest"> | string | null
@@ -364,12 +367,13 @@ export type MockExamGenerationRequestCreateInput = {
   stageCode: string
   descriptorIds?: Prisma.MockExamGenerationRequestCreatedescriptorIdsInput | string[]
   questionCount: number
-  difficulty: string
+  difficulty?: string | null
   questionType: string
   configHash: string
   errorMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  questions?: Prisma.GeneratedQuestionCreateNestedManyWithoutGenerationRequestInput
 }
 
 export type MockExamGenerationRequestUncheckedCreateInput = {
@@ -380,12 +384,13 @@ export type MockExamGenerationRequestUncheckedCreateInput = {
   stageCode: string
   descriptorIds?: Prisma.MockExamGenerationRequestCreatedescriptorIdsInput | string[]
   questionCount: number
-  difficulty: string
+  difficulty?: string | null
   questionType: string
   configHash: string
   errorMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  questions?: Prisma.GeneratedQuestionUncheckedCreateNestedManyWithoutGenerationRequestInput
 }
 
 export type MockExamGenerationRequestUpdateInput = {
@@ -395,12 +400,13 @@ export type MockExamGenerationRequestUpdateInput = {
   stageCode?: Prisma.StringFieldUpdateOperationsInput | string
   descriptorIds?: Prisma.MockExamGenerationRequestUpdatedescriptorIdsInput | string[]
   questionCount?: Prisma.IntFieldUpdateOperationsInput | number
-  difficulty?: Prisma.StringFieldUpdateOperationsInput | string
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questionType?: Prisma.StringFieldUpdateOperationsInput | string
   configHash?: Prisma.StringFieldUpdateOperationsInput | string
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  questions?: Prisma.GeneratedQuestionUpdateManyWithoutGenerationRequestNestedInput
 }
 
 export type MockExamGenerationRequestUncheckedUpdateInput = {
@@ -411,12 +417,13 @@ export type MockExamGenerationRequestUncheckedUpdateInput = {
   stageCode?: Prisma.StringFieldUpdateOperationsInput | string
   descriptorIds?: Prisma.MockExamGenerationRequestUpdatedescriptorIdsInput | string[]
   questionCount?: Prisma.IntFieldUpdateOperationsInput | number
-  difficulty?: Prisma.StringFieldUpdateOperationsInput | string
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questionType?: Prisma.StringFieldUpdateOperationsInput | string
   configHash?: Prisma.StringFieldUpdateOperationsInput | string
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  questions?: Prisma.GeneratedQuestionUncheckedUpdateManyWithoutGenerationRequestNestedInput
 }
 
 export type MockExamGenerationRequestCreateManyInput = {
@@ -427,7 +434,7 @@ export type MockExamGenerationRequestCreateManyInput = {
   stageCode: string
   descriptorIds?: Prisma.MockExamGenerationRequestCreatedescriptorIdsInput | string[]
   questionCount: number
-  difficulty: string
+  difficulty?: string | null
   questionType: string
   configHash: string
   errorMessage?: string | null
@@ -442,7 +449,7 @@ export type MockExamGenerationRequestUpdateManyMutationInput = {
   stageCode?: Prisma.StringFieldUpdateOperationsInput | string
   descriptorIds?: Prisma.MockExamGenerationRequestUpdatedescriptorIdsInput | string[]
   questionCount?: Prisma.IntFieldUpdateOperationsInput | number
-  difficulty?: Prisma.StringFieldUpdateOperationsInput | string
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questionType?: Prisma.StringFieldUpdateOperationsInput | string
   configHash?: Prisma.StringFieldUpdateOperationsInput | string
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -458,7 +465,7 @@ export type MockExamGenerationRequestUncheckedUpdateManyInput = {
   stageCode?: Prisma.StringFieldUpdateOperationsInput | string
   descriptorIds?: Prisma.MockExamGenerationRequestUpdatedescriptorIdsInput | string[]
   questionCount?: Prisma.IntFieldUpdateOperationsInput | number
-  difficulty?: Prisma.StringFieldUpdateOperationsInput | string
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questionType?: Prisma.StringFieldUpdateOperationsInput | string
   configHash?: Prisma.StringFieldUpdateOperationsInput | string
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -530,6 +537,11 @@ export type MockExamGenerationRequestSumOrderByAggregateInput = {
   questionCount?: Prisma.SortOrder
 }
 
+export type MockExamGenerationRequestScalarRelationFilter = {
+  is?: Prisma.MockExamGenerationRequestWhereInput
+  isNot?: Prisma.MockExamGenerationRequestWhereInput
+}
+
 export type MockExamGenerationRequestCreatedescriptorIdsInput = {
   set: string[]
 }
@@ -543,10 +555,127 @@ export type MockExamGenerationRequestUpdatedescriptorIdsInput = {
   push?: string | string[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
+export type MockExamGenerationRequestCreateNestedOneWithoutQuestionsInput = {
+  create?: Prisma.XOR<Prisma.MockExamGenerationRequestCreateWithoutQuestionsInput, Prisma.MockExamGenerationRequestUncheckedCreateWithoutQuestionsInput>
+  connectOrCreate?: Prisma.MockExamGenerationRequestCreateOrConnectWithoutQuestionsInput
+  connect?: Prisma.MockExamGenerationRequestWhereUniqueInput
 }
 
+export type MockExamGenerationRequestUpdateOneRequiredWithoutQuestionsNestedInput = {
+  create?: Prisma.XOR<Prisma.MockExamGenerationRequestCreateWithoutQuestionsInput, Prisma.MockExamGenerationRequestUncheckedCreateWithoutQuestionsInput>
+  connectOrCreate?: Prisma.MockExamGenerationRequestCreateOrConnectWithoutQuestionsInput
+  upsert?: Prisma.MockExamGenerationRequestUpsertWithoutQuestionsInput
+  connect?: Prisma.MockExamGenerationRequestWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MockExamGenerationRequestUpdateToOneWithWhereWithoutQuestionsInput, Prisma.MockExamGenerationRequestUpdateWithoutQuestionsInput>, Prisma.MockExamGenerationRequestUncheckedUpdateWithoutQuestionsInput>
+}
+
+export type MockExamGenerationRequestCreateWithoutQuestionsInput = {
+  requestId?: string
+  status?: $Enums.GenerationStatus
+  disciplineCode: string
+  stageCode: string
+  descriptorIds?: Prisma.MockExamGenerationRequestCreatedescriptorIdsInput | string[]
+  questionCount: number
+  difficulty?: string | null
+  questionType: string
+  configHash: string
+  errorMessage?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type MockExamGenerationRequestUncheckedCreateWithoutQuestionsInput = {
+  id?: number
+  requestId?: string
+  status?: $Enums.GenerationStatus
+  disciplineCode: string
+  stageCode: string
+  descriptorIds?: Prisma.MockExamGenerationRequestCreatedescriptorIdsInput | string[]
+  questionCount: number
+  difficulty?: string | null
+  questionType: string
+  configHash: string
+  errorMessage?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type MockExamGenerationRequestCreateOrConnectWithoutQuestionsInput = {
+  where: Prisma.MockExamGenerationRequestWhereUniqueInput
+  create: Prisma.XOR<Prisma.MockExamGenerationRequestCreateWithoutQuestionsInput, Prisma.MockExamGenerationRequestUncheckedCreateWithoutQuestionsInput>
+}
+
+export type MockExamGenerationRequestUpsertWithoutQuestionsInput = {
+  update: Prisma.XOR<Prisma.MockExamGenerationRequestUpdateWithoutQuestionsInput, Prisma.MockExamGenerationRequestUncheckedUpdateWithoutQuestionsInput>
+  create: Prisma.XOR<Prisma.MockExamGenerationRequestCreateWithoutQuestionsInput, Prisma.MockExamGenerationRequestUncheckedCreateWithoutQuestionsInput>
+  where?: Prisma.MockExamGenerationRequestWhereInput
+}
+
+export type MockExamGenerationRequestUpdateToOneWithWhereWithoutQuestionsInput = {
+  where?: Prisma.MockExamGenerationRequestWhereInput
+  data: Prisma.XOR<Prisma.MockExamGenerationRequestUpdateWithoutQuestionsInput, Prisma.MockExamGenerationRequestUncheckedUpdateWithoutQuestionsInput>
+}
+
+export type MockExamGenerationRequestUpdateWithoutQuestionsInput = {
+  requestId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumGenerationStatusFieldUpdateOperationsInput | $Enums.GenerationStatus
+  disciplineCode?: Prisma.StringFieldUpdateOperationsInput | string
+  stageCode?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptorIds?: Prisma.MockExamGenerationRequestUpdatedescriptorIdsInput | string[]
+  questionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  questionType?: Prisma.StringFieldUpdateOperationsInput | string
+  configHash?: Prisma.StringFieldUpdateOperationsInput | string
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type MockExamGenerationRequestUncheckedUpdateWithoutQuestionsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  requestId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumGenerationStatusFieldUpdateOperationsInput | $Enums.GenerationStatus
+  disciplineCode?: Prisma.StringFieldUpdateOperationsInput | string
+  stageCode?: Prisma.StringFieldUpdateOperationsInput | string
+  descriptorIds?: Prisma.MockExamGenerationRequestUpdatedescriptorIdsInput | string[]
+  questionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  questionType?: Prisma.StringFieldUpdateOperationsInput | string
+  configHash?: Prisma.StringFieldUpdateOperationsInput | string
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type MockExamGenerationRequestCountOutputType
+ */
+
+export type MockExamGenerationRequestCountOutputType = {
+  questions: number
+}
+
+export type MockExamGenerationRequestCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  questions?: boolean | MockExamGenerationRequestCountOutputTypeCountQuestionsArgs
+}
+
+/**
+ * MockExamGenerationRequestCountOutputType without action
+ */
+export type MockExamGenerationRequestCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MockExamGenerationRequestCountOutputType
+   */
+  select?: Prisma.MockExamGenerationRequestCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * MockExamGenerationRequestCountOutputType without action
+ */
+export type MockExamGenerationRequestCountOutputTypeCountQuestionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GeneratedQuestionWhereInput
+}
 
 
 export type MockExamGenerationRequestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -563,6 +692,8 @@ export type MockExamGenerationRequestSelect<ExtArgs extends runtime.Types.Extens
   errorMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  questions?: boolean | Prisma.MockExamGenerationRequest$questionsArgs<ExtArgs>
+  _count?: boolean | Prisma.MockExamGenerationRequestCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["mockExamGenerationRequest"]>
 
 export type MockExamGenerationRequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -614,10 +745,18 @@ export type MockExamGenerationRequestSelectScalar = {
 }
 
 export type MockExamGenerationRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "requestId" | "status" | "disciplineCode" | "stageCode" | "descriptorIds" | "questionCount" | "difficulty" | "questionType" | "configHash" | "errorMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["mockExamGenerationRequest"]>
+export type MockExamGenerationRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  questions?: boolean | Prisma.MockExamGenerationRequest$questionsArgs<ExtArgs>
+  _count?: boolean | Prisma.MockExamGenerationRequestCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type MockExamGenerationRequestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type MockExamGenerationRequestIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $MockExamGenerationRequestPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "MockExamGenerationRequest"
-  objects: {}
+  objects: {
+    questions: Prisma.$GeneratedQuestionPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     requestId: string
@@ -626,7 +765,7 @@ export type $MockExamGenerationRequestPayload<ExtArgs extends runtime.Types.Exte
     stageCode: string
     descriptorIds: string[]
     questionCount: number
-    difficulty: string
+    difficulty: string | null
     questionType: string
     configHash: string
     errorMessage: string | null
@@ -1026,6 +1165,7 @@ readonly fields: MockExamGenerationRequestFieldRefs;
  */
 export interface Prisma__MockExamGenerationRequestClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  questions<T extends Prisma.MockExamGenerationRequest$questionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MockExamGenerationRequest$questionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GeneratedQuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1085,6 +1225,10 @@ export type MockExamGenerationRequestFindUniqueArgs<ExtArgs extends runtime.Type
    */
   omit?: Prisma.MockExamGenerationRequestOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MockExamGenerationRequestInclude<ExtArgs> | null
+  /**
    * Filter, which MockExamGenerationRequest to fetch.
    */
   where: Prisma.MockExamGenerationRequestWhereUniqueInput
@@ -1103,6 +1247,10 @@ export type MockExamGenerationRequestFindUniqueOrThrowArgs<ExtArgs extends runti
    */
   omit?: Prisma.MockExamGenerationRequestOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MockExamGenerationRequestInclude<ExtArgs> | null
+  /**
    * Filter, which MockExamGenerationRequest to fetch.
    */
   where: Prisma.MockExamGenerationRequestWhereUniqueInput
@@ -1120,6 +1268,10 @@ export type MockExamGenerationRequestFindFirstArgs<ExtArgs extends runtime.Types
    * Omit specific fields from the MockExamGenerationRequest
    */
   omit?: Prisma.MockExamGenerationRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MockExamGenerationRequestInclude<ExtArgs> | null
   /**
    * Filter, which MockExamGenerationRequest to fetch.
    */
@@ -1169,6 +1321,10 @@ export type MockExamGenerationRequestFindFirstOrThrowArgs<ExtArgs extends runtim
    */
   omit?: Prisma.MockExamGenerationRequestOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MockExamGenerationRequestInclude<ExtArgs> | null
+  /**
    * Filter, which MockExamGenerationRequest to fetch.
    */
   where?: Prisma.MockExamGenerationRequestWhereInput
@@ -1216,6 +1372,10 @@ export type MockExamGenerationRequestFindManyArgs<ExtArgs extends runtime.Types.
    * Omit specific fields from the MockExamGenerationRequest
    */
   omit?: Prisma.MockExamGenerationRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MockExamGenerationRequestInclude<ExtArgs> | null
   /**
    * Filter, which MockExamGenerationRequests to fetch.
    */
@@ -1265,6 +1425,10 @@ export type MockExamGenerationRequestCreateArgs<ExtArgs extends runtime.Types.Ex
    */
   omit?: Prisma.MockExamGenerationRequestOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MockExamGenerationRequestInclude<ExtArgs> | null
+  /**
    * The data needed to create a MockExamGenerationRequest.
    */
   data: Prisma.XOR<Prisma.MockExamGenerationRequestCreateInput, Prisma.MockExamGenerationRequestUncheckedCreateInput>
@@ -1312,6 +1476,10 @@ export type MockExamGenerationRequestUpdateArgs<ExtArgs extends runtime.Types.Ex
    * Omit specific fields from the MockExamGenerationRequest
    */
   omit?: Prisma.MockExamGenerationRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MockExamGenerationRequestInclude<ExtArgs> | null
   /**
    * The data needed to update a MockExamGenerationRequest.
    */
@@ -1379,6 +1547,10 @@ export type MockExamGenerationRequestUpsertArgs<ExtArgs extends runtime.Types.Ex
    */
   omit?: Prisma.MockExamGenerationRequestOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MockExamGenerationRequestInclude<ExtArgs> | null
+  /**
    * The filter to search for the MockExamGenerationRequest to update in case it exists.
    */
   where: Prisma.MockExamGenerationRequestWhereUniqueInput
@@ -1405,6 +1577,10 @@ export type MockExamGenerationRequestDeleteArgs<ExtArgs extends runtime.Types.Ex
    */
   omit?: Prisma.MockExamGenerationRequestOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MockExamGenerationRequestInclude<ExtArgs> | null
+  /**
    * Filter which MockExamGenerationRequest to delete.
    */
   where: Prisma.MockExamGenerationRequestWhereUniqueInput
@@ -1425,6 +1601,30 @@ export type MockExamGenerationRequestDeleteManyArgs<ExtArgs extends runtime.Type
 }
 
 /**
+ * MockExamGenerationRequest.questions
+ */
+export type MockExamGenerationRequest$questionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GeneratedQuestion
+   */
+  select?: Prisma.GeneratedQuestionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GeneratedQuestion
+   */
+  omit?: Prisma.GeneratedQuestionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GeneratedQuestionInclude<ExtArgs> | null
+  where?: Prisma.GeneratedQuestionWhereInput
+  orderBy?: Prisma.GeneratedQuestionOrderByWithRelationInput | Prisma.GeneratedQuestionOrderByWithRelationInput[]
+  cursor?: Prisma.GeneratedQuestionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GeneratedQuestionScalarFieldEnum | Prisma.GeneratedQuestionScalarFieldEnum[]
+}
+
+/**
  * MockExamGenerationRequest without action
  */
 export type MockExamGenerationRequestDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1436,4 +1636,8 @@ export type MockExamGenerationRequestDefaultArgs<ExtArgs extends runtime.Types.E
    * Omit specific fields from the MockExamGenerationRequest
    */
   omit?: Prisma.MockExamGenerationRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MockExamGenerationRequestInclude<ExtArgs> | null
 }

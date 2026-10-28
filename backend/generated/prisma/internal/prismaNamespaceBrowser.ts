@@ -51,11 +51,16 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  ArchivedQuestionSource: 'ArchivedQuestionSource',
+  ArchivedQuestion: 'ArchivedQuestion',
+  ArchivedQuestionAlternative: 'ArchivedQuestionAlternative',
   ReferenceMatrix: 'ReferenceMatrix',
   Stage: 'Stage',
   Discipline: 'Discipline',
   Descriptor: 'Descriptor',
-  MockExamGenerationRequest: 'MockExamGenerationRequest'
+  MockExamGenerationRequest: 'MockExamGenerationRequest',
+  GeneratedQuestion: 'GeneratedQuestion',
+  GeneratedQuestionAlternative: 'GeneratedQuestionAlternative'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -72,6 +77,56 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 } as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const ArchivedQuestionSourceScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  title: 'title',
+  sourceType: 'sourceType',
+  year: 'year',
+  bookletCode: 'bookletCode',
+  stageCode: 'stageCode',
+  originalFileName: 'originalFileName',
+  sourceNotes: 'sourceNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ArchivedQuestionSourceScalarFieldEnum = (typeof ArchivedQuestionSourceScalarFieldEnum)[keyof typeof ArchivedQuestionSourceScalarFieldEnum]
+
+
+export const ArchivedQuestionScalarFieldEnum = {
+  id: 'id',
+  sourceId: 'sourceId',
+  number: 'number',
+  itemCode: 'itemCode',
+  disciplineCode: 'disciplineCode',
+  descriptorCode: 'descriptorCode',
+  statement: 'statement',
+  stimulusText: 'stimulusText',
+  stimulusAssetPath: 'stimulusAssetPath',
+  stimulusAltText: 'stimulusAltText',
+  pdfPageNumber: 'pdfPageNumber',
+  correctAlternative: 'correctAlternative',
+  answerSource: 'answerSource',
+  reviewStatus: 'reviewStatus',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ArchivedQuestionScalarFieldEnum = (typeof ArchivedQuestionScalarFieldEnum)[keyof typeof ArchivedQuestionScalarFieldEnum]
+
+
+export const ArchivedQuestionAlternativeScalarFieldEnum = {
+  id: 'id',
+  questionId: 'questionId',
+  label: 'label',
+  text: 'text',
+  createdAt: 'createdAt'
+} as const
+
+export type ArchivedQuestionAlternativeScalarFieldEnum = (typeof ArchivedQuestionAlternativeScalarFieldEnum)[keyof typeof ArchivedQuestionAlternativeScalarFieldEnum]
 
 
 export const ReferenceMatrixScalarFieldEnum = {
@@ -144,6 +199,37 @@ export const MockExamGenerationRequestScalarFieldEnum = {
 } as const
 
 export type MockExamGenerationRequestScalarFieldEnum = (typeof MockExamGenerationRequestScalarFieldEnum)[keyof typeof MockExamGenerationRequestScalarFieldEnum]
+
+
+export const GeneratedQuestionScalarFieldEnum = {
+  id: 'id',
+  generationRequestId: 'generationRequestId',
+  descriptorId: 'descriptorId',
+  position: 'position',
+  statement: 'statement',
+  correctAnswer: 'correctAnswer',
+  difficulty: 'difficulty',
+  questionType: 'questionType',
+  stimulusText: 'stimulusText',
+  stimulusAssetPath: 'stimulusAssetPath',
+  stimulusAltText: 'stimulusAltText',
+  sourceArchivedQuestionId: 'sourceArchivedQuestionId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GeneratedQuestionScalarFieldEnum = (typeof GeneratedQuestionScalarFieldEnum)[keyof typeof GeneratedQuestionScalarFieldEnum]
+
+
+export const GeneratedQuestionAlternativeScalarFieldEnum = {
+  id: 'id',
+  questionId: 'questionId',
+  label: 'label',
+  text: 'text',
+  createdAt: 'createdAt'
+} as const
+
+export type GeneratedQuestionAlternativeScalarFieldEnum = (typeof GeneratedQuestionAlternativeScalarFieldEnum)[keyof typeof GeneratedQuestionAlternativeScalarFieldEnum]
 
 
 export const SortOrder = {

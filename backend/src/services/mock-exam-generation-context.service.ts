@@ -92,6 +92,9 @@ export async function buildMockExamGenerationInput(
     difficulty:
       config.difficulty,
 
+    questionType:
+      config.questionType,
+
     descriptors,
   };
 }

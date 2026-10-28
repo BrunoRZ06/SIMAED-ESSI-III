@@ -1,0 +1,10 @@
+CREATE TYPE "QuestionSourceType" AS ENUM ('HISTORICAL', 'ORIGINAL_PRACTICE');
+
+ALTER TABLE "ArchivedQuestionSource"
+ADD COLUMN "sourceType" "QuestionSourceType" NOT NULL DEFAULT 'HISTORICAL',
+ALTER COLUMN "year" DROP NOT NULL,
+ALTER COLUMN "bookletCode" DROP NOT NULL,
+ALTER COLUMN "originalFileName" DROP NOT NULL;
+
+ALTER TABLE "ArchivedQuestion"
+ALTER COLUMN "pdfPageNumber" DROP NOT NULL;

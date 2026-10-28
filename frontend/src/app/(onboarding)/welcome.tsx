@@ -10,7 +10,7 @@ export default function Welcome() {
   };
 
   const handleLoginPress = () => {
-    console.log('Navegar para login');
+    router.push('/login');
   };
 
   return (

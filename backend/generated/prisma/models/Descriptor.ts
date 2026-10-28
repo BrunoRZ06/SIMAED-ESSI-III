@@ -217,6 +217,7 @@ export type DescriptorWhereInput = {
   matrix?: Prisma.XOR<Prisma.ReferenceMatrixScalarRelationFilter, Prisma.ReferenceMatrixWhereInput>
   stage?: Prisma.XOR<Prisma.StageScalarRelationFilter, Prisma.StageWhereInput>
   discipline?: Prisma.XOR<Prisma.DisciplineScalarRelationFilter, Prisma.DisciplineWhereInput>
+  generatedQuestions?: Prisma.GeneratedQuestionListRelationFilter
 }
 
 export type DescriptorOrderByWithRelationInput = {
@@ -232,6 +233,7 @@ export type DescriptorOrderByWithRelationInput = {
   matrix?: Prisma.ReferenceMatrixOrderByWithRelationInput
   stage?: Prisma.StageOrderByWithRelationInput
   discipline?: Prisma.DisciplineOrderByWithRelationInput
+  generatedQuestions?: Prisma.GeneratedQuestionOrderByRelationAggregateInput
 }
 
 export type DescriptorWhereUniqueInput = Prisma.AtLeast<{
@@ -251,6 +253,7 @@ export type DescriptorWhereUniqueInput = Prisma.AtLeast<{
   matrix?: Prisma.XOR<Prisma.ReferenceMatrixScalarRelationFilter, Prisma.ReferenceMatrixWhereInput>
   stage?: Prisma.XOR<Prisma.StageScalarRelationFilter, Prisma.StageWhereInput>
   discipline?: Prisma.XOR<Prisma.DisciplineScalarRelationFilter, Prisma.DisciplineWhereInput>
+  generatedQuestions?: Prisma.GeneratedQuestionListRelationFilter
 }, "id" | "matrixId_stageId_disciplineId_code">
 
 export type DescriptorOrderByWithAggregationInput = {
@@ -293,6 +296,7 @@ export type DescriptorCreateInput = {
   matrix: Prisma.ReferenceMatrixCreateNestedOneWithoutDescriptorsInput
   stage: Prisma.StageCreateNestedOneWithoutDescriptorsInput
   discipline: Prisma.DisciplineCreateNestedOneWithoutDescriptorsInput
+  generatedQuestions?: Prisma.GeneratedQuestionCreateNestedManyWithoutDescriptorInput
 }
 
 export type DescriptorUncheckedCreateInput = {
@@ -305,6 +309,7 @@ export type DescriptorUncheckedCreateInput = {
   matrixId: string
   stageId: string
   disciplineId: string
+  generatedQuestions?: Prisma.GeneratedQuestionUncheckedCreateNestedManyWithoutDescriptorInput
 }
 
 export type DescriptorUpdateInput = {
@@ -317,6 +322,7 @@ export type DescriptorUpdateInput = {
   matrix?: Prisma.ReferenceMatrixUpdateOneRequiredWithoutDescriptorsNestedInput
   stage?: Prisma.StageUpdateOneRequiredWithoutDescriptorsNestedInput
   discipline?: Prisma.DisciplineUpdateOneRequiredWithoutDescriptorsNestedInput
+  generatedQuestions?: Prisma.GeneratedQuestionUpdateManyWithoutDescriptorNestedInput
 }
 
 export type DescriptorUncheckedUpdateInput = {
@@ -329,6 +335,7 @@ export type DescriptorUncheckedUpdateInput = {
   matrixId?: Prisma.StringFieldUpdateOperationsInput | string
   stageId?: Prisma.StringFieldUpdateOperationsInput | string
   disciplineId?: Prisma.StringFieldUpdateOperationsInput | string
+  generatedQuestions?: Prisma.GeneratedQuestionUncheckedUpdateManyWithoutDescriptorNestedInput
 }
 
 export type DescriptorCreateManyInput = {
@@ -415,6 +422,11 @@ export type DescriptorMinOrderByAggregateInput = {
   matrixId?: Prisma.SortOrder
   stageId?: Prisma.SortOrder
   disciplineId?: Prisma.SortOrder
+}
+
+export type DescriptorScalarRelationFilter = {
+  is?: Prisma.DescriptorWhereInput
+  isNot?: Prisma.DescriptorWhereInput
 }
 
 export type DescriptorCreateNestedManyWithoutMatrixInput = {
@@ -543,6 +555,20 @@ export type DescriptorUncheckedUpdateManyWithoutDisciplineNestedInput = {
   deleteMany?: Prisma.DescriptorScalarWhereInput | Prisma.DescriptorScalarWhereInput[]
 }
 
+export type DescriptorCreateNestedOneWithoutGeneratedQuestionsInput = {
+  create?: Prisma.XOR<Prisma.DescriptorCreateWithoutGeneratedQuestionsInput, Prisma.DescriptorUncheckedCreateWithoutGeneratedQuestionsInput>
+  connectOrCreate?: Prisma.DescriptorCreateOrConnectWithoutGeneratedQuestionsInput
+  connect?: Prisma.DescriptorWhereUniqueInput
+}
+
+export type DescriptorUpdateOneRequiredWithoutGeneratedQuestionsNestedInput = {
+  create?: Prisma.XOR<Prisma.DescriptorCreateWithoutGeneratedQuestionsInput, Prisma.DescriptorUncheckedCreateWithoutGeneratedQuestionsInput>
+  connectOrCreate?: Prisma.DescriptorCreateOrConnectWithoutGeneratedQuestionsInput
+  upsert?: Prisma.DescriptorUpsertWithoutGeneratedQuestionsInput
+  connect?: Prisma.DescriptorWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DescriptorUpdateToOneWithWhereWithoutGeneratedQuestionsInput, Prisma.DescriptorUpdateWithoutGeneratedQuestionsInput>, Prisma.DescriptorUncheckedUpdateWithoutGeneratedQuestionsInput>
+}
+
 export type DescriptorCreateWithoutMatrixInput = {
   id?: string
   code: string
@@ -552,6 +578,7 @@ export type DescriptorCreateWithoutMatrixInput = {
   updatedAt?: Date | string
   stage: Prisma.StageCreateNestedOneWithoutDescriptorsInput
   discipline: Prisma.DisciplineCreateNestedOneWithoutDescriptorsInput
+  generatedQuestions?: Prisma.GeneratedQuestionCreateNestedManyWithoutDescriptorInput
 }
 
 export type DescriptorUncheckedCreateWithoutMatrixInput = {
@@ -563,6 +590,7 @@ export type DescriptorUncheckedCreateWithoutMatrixInput = {
   updatedAt?: Date | string
   stageId: string
   disciplineId: string
+  generatedQuestions?: Prisma.GeneratedQuestionUncheckedCreateNestedManyWithoutDescriptorInput
 }
 
 export type DescriptorCreateOrConnectWithoutMatrixInput = {
@@ -615,6 +643,7 @@ export type DescriptorCreateWithoutStageInput = {
   updatedAt?: Date | string
   matrix: Prisma.ReferenceMatrixCreateNestedOneWithoutDescriptorsInput
   discipline: Prisma.DisciplineCreateNestedOneWithoutDescriptorsInput
+  generatedQuestions?: Prisma.GeneratedQuestionCreateNestedManyWithoutDescriptorInput
 }
 
 export type DescriptorUncheckedCreateWithoutStageInput = {
@@ -626,6 +655,7 @@ export type DescriptorUncheckedCreateWithoutStageInput = {
   updatedAt?: Date | string
   matrixId: string
   disciplineId: string
+  generatedQuestions?: Prisma.GeneratedQuestionUncheckedCreateNestedManyWithoutDescriptorInput
 }
 
 export type DescriptorCreateOrConnectWithoutStageInput = {
@@ -663,6 +693,7 @@ export type DescriptorCreateWithoutDisciplineInput = {
   updatedAt?: Date | string
   matrix: Prisma.ReferenceMatrixCreateNestedOneWithoutDescriptorsInput
   stage: Prisma.StageCreateNestedOneWithoutDescriptorsInput
+  generatedQuestions?: Prisma.GeneratedQuestionCreateNestedManyWithoutDescriptorInput
 }
 
 export type DescriptorUncheckedCreateWithoutDisciplineInput = {
@@ -674,6 +705,7 @@ export type DescriptorUncheckedCreateWithoutDisciplineInput = {
   updatedAt?: Date | string
   matrixId: string
   stageId: string
+  generatedQuestions?: Prisma.GeneratedQuestionUncheckedCreateNestedManyWithoutDescriptorInput
 }
 
 export type DescriptorCreateOrConnectWithoutDisciplineInput = {
@@ -702,6 +734,70 @@ export type DescriptorUpdateManyWithWhereWithoutDisciplineInput = {
   data: Prisma.XOR<Prisma.DescriptorUpdateManyMutationInput, Prisma.DescriptorUncheckedUpdateManyWithoutDisciplineInput>
 }
 
+export type DescriptorCreateWithoutGeneratedQuestionsInput = {
+  id?: string
+  code: string
+  description: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  matrix: Prisma.ReferenceMatrixCreateNestedOneWithoutDescriptorsInput
+  stage: Prisma.StageCreateNestedOneWithoutDescriptorsInput
+  discipline: Prisma.DisciplineCreateNestedOneWithoutDescriptorsInput
+}
+
+export type DescriptorUncheckedCreateWithoutGeneratedQuestionsInput = {
+  id?: string
+  code: string
+  description: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  matrixId: string
+  stageId: string
+  disciplineId: string
+}
+
+export type DescriptorCreateOrConnectWithoutGeneratedQuestionsInput = {
+  where: Prisma.DescriptorWhereUniqueInput
+  create: Prisma.XOR<Prisma.DescriptorCreateWithoutGeneratedQuestionsInput, Prisma.DescriptorUncheckedCreateWithoutGeneratedQuestionsInput>
+}
+
+export type DescriptorUpsertWithoutGeneratedQuestionsInput = {
+  update: Prisma.XOR<Prisma.DescriptorUpdateWithoutGeneratedQuestionsInput, Prisma.DescriptorUncheckedUpdateWithoutGeneratedQuestionsInput>
+  create: Prisma.XOR<Prisma.DescriptorCreateWithoutGeneratedQuestionsInput, Prisma.DescriptorUncheckedCreateWithoutGeneratedQuestionsInput>
+  where?: Prisma.DescriptorWhereInput
+}
+
+export type DescriptorUpdateToOneWithWhereWithoutGeneratedQuestionsInput = {
+  where?: Prisma.DescriptorWhereInput
+  data: Prisma.XOR<Prisma.DescriptorUpdateWithoutGeneratedQuestionsInput, Prisma.DescriptorUncheckedUpdateWithoutGeneratedQuestionsInput>
+}
+
+export type DescriptorUpdateWithoutGeneratedQuestionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  matrix?: Prisma.ReferenceMatrixUpdateOneRequiredWithoutDescriptorsNestedInput
+  stage?: Prisma.StageUpdateOneRequiredWithoutDescriptorsNestedInput
+  discipline?: Prisma.DisciplineUpdateOneRequiredWithoutDescriptorsNestedInput
+}
+
+export type DescriptorUncheckedUpdateWithoutGeneratedQuestionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  matrixId?: Prisma.StringFieldUpdateOperationsInput | string
+  stageId?: Prisma.StringFieldUpdateOperationsInput | string
+  disciplineId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
 export type DescriptorCreateManyMatrixInput = {
   id?: string
   code: string
@@ -722,6 +818,7 @@ export type DescriptorUpdateWithoutMatrixInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stage?: Prisma.StageUpdateOneRequiredWithoutDescriptorsNestedInput
   discipline?: Prisma.DisciplineUpdateOneRequiredWithoutDescriptorsNestedInput
+  generatedQuestions?: Prisma.GeneratedQuestionUpdateManyWithoutDescriptorNestedInput
 }
 
 export type DescriptorUncheckedUpdateWithoutMatrixInput = {
@@ -733,6 +830,7 @@ export type DescriptorUncheckedUpdateWithoutMatrixInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stageId?: Prisma.StringFieldUpdateOperationsInput | string
   disciplineId?: Prisma.StringFieldUpdateOperationsInput | string
+  generatedQuestions?: Prisma.GeneratedQuestionUncheckedUpdateManyWithoutDescriptorNestedInput
 }
 
 export type DescriptorUncheckedUpdateManyWithoutMatrixInput = {
@@ -766,6 +864,7 @@ export type DescriptorUpdateWithoutStageInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   matrix?: Prisma.ReferenceMatrixUpdateOneRequiredWithoutDescriptorsNestedInput
   discipline?: Prisma.DisciplineUpdateOneRequiredWithoutDescriptorsNestedInput
+  generatedQuestions?: Prisma.GeneratedQuestionUpdateManyWithoutDescriptorNestedInput
 }
 
 export type DescriptorUncheckedUpdateWithoutStageInput = {
@@ -777,6 +876,7 @@ export type DescriptorUncheckedUpdateWithoutStageInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   matrixId?: Prisma.StringFieldUpdateOperationsInput | string
   disciplineId?: Prisma.StringFieldUpdateOperationsInput | string
+  generatedQuestions?: Prisma.GeneratedQuestionUncheckedUpdateManyWithoutDescriptorNestedInput
 }
 
 export type DescriptorUncheckedUpdateManyWithoutStageInput = {
@@ -810,6 +910,7 @@ export type DescriptorUpdateWithoutDisciplineInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   matrix?: Prisma.ReferenceMatrixUpdateOneRequiredWithoutDescriptorsNestedInput
   stage?: Prisma.StageUpdateOneRequiredWithoutDescriptorsNestedInput
+  generatedQuestions?: Prisma.GeneratedQuestionUpdateManyWithoutDescriptorNestedInput
 }
 
 export type DescriptorUncheckedUpdateWithoutDisciplineInput = {
@@ -821,6 +922,7 @@ export type DescriptorUncheckedUpdateWithoutDisciplineInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   matrixId?: Prisma.StringFieldUpdateOperationsInput | string
   stageId?: Prisma.StringFieldUpdateOperationsInput | string
+  generatedQuestions?: Prisma.GeneratedQuestionUncheckedUpdateManyWithoutDescriptorNestedInput
 }
 
 export type DescriptorUncheckedUpdateManyWithoutDisciplineInput = {
@@ -834,6 +936,35 @@ export type DescriptorUncheckedUpdateManyWithoutDisciplineInput = {
   stageId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
+
+/**
+ * Count Type DescriptorCountOutputType
+ */
+
+export type DescriptorCountOutputType = {
+  generatedQuestions: number
+}
+
+export type DescriptorCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  generatedQuestions?: boolean | DescriptorCountOutputTypeCountGeneratedQuestionsArgs
+}
+
+/**
+ * DescriptorCountOutputType without action
+ */
+export type DescriptorCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DescriptorCountOutputType
+   */
+  select?: Prisma.DescriptorCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * DescriptorCountOutputType without action
+ */
+export type DescriptorCountOutputTypeCountGeneratedQuestionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GeneratedQuestionWhereInput
+}
 
 
 export type DescriptorSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -849,6 +980,8 @@ export type DescriptorSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   matrix?: boolean | Prisma.ReferenceMatrixDefaultArgs<ExtArgs>
   stage?: boolean | Prisma.StageDefaultArgs<ExtArgs>
   discipline?: boolean | Prisma.DisciplineDefaultArgs<ExtArgs>
+  generatedQuestions?: boolean | Prisma.Descriptor$generatedQuestionsArgs<ExtArgs>
+  _count?: boolean | Prisma.DescriptorCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["descriptor"]>
 
 export type DescriptorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -898,6 +1031,8 @@ export type DescriptorInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   matrix?: boolean | Prisma.ReferenceMatrixDefaultArgs<ExtArgs>
   stage?: boolean | Prisma.StageDefaultArgs<ExtArgs>
   discipline?: boolean | Prisma.DisciplineDefaultArgs<ExtArgs>
+  generatedQuestions?: boolean | Prisma.Descriptor$generatedQuestionsArgs<ExtArgs>
+  _count?: boolean | Prisma.DescriptorCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DescriptorIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   matrix?: boolean | Prisma.ReferenceMatrixDefaultArgs<ExtArgs>
@@ -916,6 +1051,7 @@ export type $DescriptorPayload<ExtArgs extends runtime.Types.Extensions.Internal
     matrix: Prisma.$ReferenceMatrixPayload<ExtArgs>
     stage: Prisma.$StagePayload<ExtArgs>
     discipline: Prisma.$DisciplinePayload<ExtArgs>
+    generatedQuestions: Prisma.$GeneratedQuestionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1324,6 +1460,7 @@ export interface Prisma__DescriptorClient<T, Null = never, ExtArgs extends runti
   matrix<T extends Prisma.ReferenceMatrixDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReferenceMatrixDefaultArgs<ExtArgs>>): Prisma.Prisma__ReferenceMatrixClient<runtime.Types.Result.GetResult<Prisma.$ReferenceMatrixPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   stage<T extends Prisma.StageDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StageDefaultArgs<ExtArgs>>): Prisma.Prisma__StageClient<runtime.Types.Result.GetResult<Prisma.$StagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   discipline<T extends Prisma.DisciplineDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DisciplineDefaultArgs<ExtArgs>>): Prisma.Prisma__DisciplineClient<runtime.Types.Result.GetResult<Prisma.$DisciplinePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  generatedQuestions<T extends Prisma.Descriptor$generatedQuestionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Descriptor$generatedQuestionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GeneratedQuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1760,6 +1897,30 @@ export type DescriptorDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Limit how many Descriptors to delete.
    */
   limit?: number
+}
+
+/**
+ * Descriptor.generatedQuestions
+ */
+export type Descriptor$generatedQuestionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GeneratedQuestion
+   */
+  select?: Prisma.GeneratedQuestionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GeneratedQuestion
+   */
+  omit?: Prisma.GeneratedQuestionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GeneratedQuestionInclude<ExtArgs> | null
+  where?: Prisma.GeneratedQuestionWhereInput
+  orderBy?: Prisma.GeneratedQuestionOrderByWithRelationInput | Prisma.GeneratedQuestionOrderByWithRelationInput[]
+  cursor?: Prisma.GeneratedQuestionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GeneratedQuestionScalarFieldEnum | Prisma.GeneratedQuestionScalarFieldEnum[]
 }
 
 /**

@@ -7,7 +7,7 @@ export default function Introduction() {
   return (
     <IntroductionScreen
       onLoginPress={() => router.push("/login")}
-      onStartPress={() => router.push("/mock-exam")}
+      onStartPress={() => router.push("/mock-exam/mock-exam")}
     />
   );
 }

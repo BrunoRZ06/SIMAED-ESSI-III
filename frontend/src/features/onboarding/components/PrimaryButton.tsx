@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
 
   gradient: {
     paddingVertical: 16,
+    paddingHorizontal: 20,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -69,5 +70,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "600",
+    textAlign: "center",
   },
 });

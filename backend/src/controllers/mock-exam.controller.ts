@@ -1,3 +1,4 @@
+
 import type {
   Request,
   Response,
@@ -14,6 +15,10 @@ import type {
 import {
   orchestrateMockExamGeneration,
 } from "../services/mock-exam-generation-orchestrator.service.js";
+
+import {
+  findMockExamGenerationResult,
+} from "../services/mock-exam-generation.service.js";
 
 import {
   validateMockExamConfiguration,
@@ -117,6 +122,43 @@ export async function requestMockExamGeneration(
 
       message:
         "Não foi possível criar a solicitação de geração.",
+    });
+  }
+}
+
+export async function getMockExamGenerationResult(
+  req: Request,
+  res: Response
+) {
+  const requestId = req.params.requestId;
+
+  if (typeof requestId !== "string") {
+    return res.status(400).json({
+      message: "Identificador da solicitação inválido.",
+    });
+  }
+
+  try {
+    const result =
+      await findMockExamGenerationResult(
+        requestId
+      );
+
+    if (!result) {
+      return res.status(404).json({
+        message: "Solicitação de geração não encontrada.",
+      });
+    }
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error(
+      "Erro ao consultar resultado da geração:",
+      error
+    );
+
+    return res.status(500).json({
+      message: "Não foi possível consultar o resultado da geração.",
     });
   }
 }

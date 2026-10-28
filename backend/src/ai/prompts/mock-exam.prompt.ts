@@ -31,6 +31,20 @@ function getDifficultyInstruction(
   ].join(" ");
 }
 
+function getQuestionTypeInstruction(
+  questionType: MockExamGenerationInput["questionType"]
+) {
+  if (questionType === "previous") {
+    return "Gere questões inéditas inspiradas no formato e no estilo de avaliações anteriores. Não afirme que são questões históricas reais e não reproduza questões protegidas por direitos autorais.";
+  }
+
+  if (questionType === "combined") {
+    return "Gere uma combinação equilibrada de questões inéditas e questões inéditas inspiradas no formato de avaliações anteriores. Não afirme que qualquer questão é histórica real.";
+  }
+
+  return "Gere questões totalmente inéditas, sem apresentá-las como questões de provas anteriores.";
+}
+
 export function buildMockExamPrompt(
   input: MockExamGenerationInput
 ) {
@@ -63,6 +77,12 @@ ${input.stage.code}
 
 Nível de dificuldade:
 ${input.difficulty}
+
+Tipo/origem solicitado:
+${input.questionType}
+
+Orientações para o tipo/origem:
+${getQuestionTypeInstruction(input.questionType)}
 
 Orientações para o nível de dificuldade:
 ${getDifficultyInstruction(input.difficulty)}

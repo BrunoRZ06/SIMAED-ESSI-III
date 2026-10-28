@@ -2,6 +2,8 @@ import { prisma } from "../lib/prisma.js";
 
 import type { MockExamConfigInput } from "../schemas/mock-exam.schema.js";
 import type { ValidationError } from "../types/validation-error.js";
+import { countAvailableArchivedQuestions } from "./archived-question-generation.service.js";
+import { getMockExamQuestionDistribution } from "./mock-exam-question-distribution.service.js";
 
 export async function validateParameterAvailability(
   config: MockExamConfigInput
@@ -217,6 +219,24 @@ export async function validateMockExamConfiguration(
 
   if (descriptorErrors.length > 0) {
     return descriptorErrors;
+  }
+
+  if (config.questionType !== "new") {
+    const { archivedQuestionCount: requiredArchivedQuestions } =
+      getMockExamQuestionDistribution(config);
+    const availableArchivedQuestions =
+      await countAvailableArchivedQuestions(config);
+
+    if (availableArchivedQuestions < requiredArchivedQuestions) {
+      return [
+        {
+          code: "INCOMPATIBLE",
+          field: "questionType",
+          message:
+            `O acervo tem ${availableArchivedQuestions} questões compatíveis com essa seleção, mas são necessárias ${requiredArchivedQuestions}. Reduza a quantidade, selecione outros descritores ou escolha questões inéditas.`,
+        },
+      ];
+    }
   }
 
   return [];

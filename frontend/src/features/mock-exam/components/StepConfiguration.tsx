@@ -41,6 +41,10 @@ interface StepConfigurationProps {
 
   isGenerating?: boolean;
 
+  generationError?: string | null;
+
+  generationPhase?: "sending" | "processing";
+
   scale?: number;
 }
 
@@ -52,6 +56,8 @@ export const StepConfiguration: React.FC<
   onGenerate,
   onChangeArea,
   isGenerating = false,
+  generationError = null,
+  generationPhase = "sending",
   scale = 1,
 }) => {
   const [
@@ -295,19 +301,13 @@ export const StepConfiguration: React.FC<
             scale={scale}
           />
 
-          <DifficultySection
-            value={
-              config.difficulty
-            }
-            onChange={(
-              difficulty
-            ) =>
-              onChangeConfig({
-                difficulty,
-              })
-            }
-            scale={scale}
-          />
+          {config.questionType !== "previous" && (
+            <DifficultySection
+              value={config.difficulty}
+              onChange={(difficulty) => onChangeConfig({ difficulty })}
+              scale={scale}
+            />
+          )}
 
           <DescriptorSection
             descriptors={
@@ -355,8 +355,40 @@ export const StepConfiguration: React.FC<
           </Text>
         )}
 
+        {generationError && (
         <View
+          accessibilityRole="alert"
+          accessibilityLiveRegion="assertive"
           style={[
+            styles.generationError,
+            {
+              padding: 12 * scale,
+              borderRadius: 10 * scale,
+              marginTop: 12 * scale,
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.generationErrorTitle,
+              { fontSize: 14 * scale },
+            ]}
+          >
+            Não foi possível gerar o simulado
+          </Text>
+          <Text
+            style={[
+              styles.generationErrorMessage,
+              { fontSize: 13 * scale },
+            ]}
+          >
+            {generationError}
+          </Text>
+        </View>
+        )}
+
+        <View
+        style={[
             styles.generateContainer,
             {
               marginTop:
@@ -390,7 +422,9 @@ export const StepConfiguration: React.FC<
                   },
                 ]}
               >
-                Enviando solicitação...
+                {generationPhase === "sending"
+                  ? "Enviando solicitação ao servidor…"
+                  : "Solicitação aceita. Gerando simulado… isso pode levar alguns minutos."}
               </Text>
             </View>
           )}
@@ -411,7 +445,7 @@ export const StepConfiguration: React.FC<
             <PrimaryButton
               title={
                 isGenerating
-                  ? "Gerando..."
+                  ? generationPhase === "sending" ? "Enviando..." : "Gerando..."
                   : "✨ Gerar simulado"
               }
               onPress={
@@ -502,6 +536,23 @@ const styles = StyleSheet.create({
     color: "#DC2626",
     fontWeight: "500",
     marginTop: 2,
+  },
+
+  generationError: {
+    backgroundColor: "#FEF2F2",
+    borderColor: "#FECACA",
+    borderWidth: 1,
+  },
+
+  generationErrorTitle: {
+    color: "#B42318",
+    fontWeight: "700",
+    marginBottom: 4,
+  },
+
+  generationErrorMessage: {
+    color: "#7F1D1D",
+    lineHeight: 19,
   },
 
   generateContainer: {},

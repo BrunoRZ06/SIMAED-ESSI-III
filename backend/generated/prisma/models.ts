@@ -8,9 +8,14 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/ArchivedQuestionSource.js'
+export type * from './models/ArchivedQuestion.js'
+export type * from './models/ArchivedQuestionAlternative.js'
 export type * from './models/ReferenceMatrix.js'
 export type * from './models/Stage.js'
 export type * from './models/Discipline.js'
 export type * from './models/Descriptor.js'
 export type * from './models/MockExamGenerationRequest.js'
+export type * from './models/GeneratedQuestion.js'
+export type * from './models/GeneratedQuestionAlternative.js'
 export type * from './commonInputTypes.js'
