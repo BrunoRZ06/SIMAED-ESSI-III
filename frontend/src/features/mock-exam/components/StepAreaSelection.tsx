@@ -230,6 +230,7 @@ export const StepAreaSelection: React.FC<
       <View
         style={{
           marginTop: 16 * scale,
+          marginBottom: 12 * scale,
         }}
       >
         <PrimaryButton

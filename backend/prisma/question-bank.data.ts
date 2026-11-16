@@ -109,6 +109,17 @@ export const questionBankSources = [
     sourceNotes:
       "Questões autorais de prática elaboradas para os descritores cadastrados para o 2º ano. Não são itens de provas históricas do SAEPE. Gabaritos sugeridos; recomenda-se revisão pedagógica.",
   },
+  {
+    code: "AUTHORIAL_DEMO_LP_D01_D02_3EM",
+    title: "Questões demonstrativas autorais — Língua Portuguesa D01/D02 — Ensino Médio",
+    sourceType: "ORIGINAL_PRACTICE",
+    year: null,
+    bookletCode: null,
+    stageCode: "3EM",
+    originalFileName: null,
+    sourceNotes:
+      "Dez questões autorais para demonstração do aplicativo, cinco de D01 e cinco de D02. Não são itens de provas oficiais. Gabaritos conferidos para uso demonstrativo.",
+  },
 ] as const;
 
 export interface QuestionBankSeedItem {
@@ -124,6 +135,7 @@ export interface QuestionBankSeedItem {
   pdfPageNumber: number | null;
   correctAlternative: string | null;
   answerSource: string;
+  reviewStatus?: "NEEDS_REVIEW" | "REVIEWED";
   alternatives: { label: string; text: string }[];
 }
 

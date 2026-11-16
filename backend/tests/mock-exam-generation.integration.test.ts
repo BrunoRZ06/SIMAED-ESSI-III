@@ -198,6 +198,48 @@ describe(
   "US-06 - Solicitação de geração do simulado",
   () => {
     it(
+      "US07-CT01 - encaminha todos os parâmetros de uma solicitação válida",
+      async () => {
+        const payload = validPayload({
+          descriptorIds,
+          questionCount: 15,
+          difficulty: "hard",
+          questionType: "combined",
+        });
+
+        const response =
+          await request(app)
+            .post("/mock-exams/generate")
+            .send(payload);
+
+        expect(response.status).toBe(202);
+        expect(dispatchSpy).toHaveBeenCalledWith({
+          requestId: response.body.requestId,
+          config: payload,
+        });
+      }
+    );
+
+    it(
+      "US07-CT02 - não inicia geração para solicitação não validada",
+      async () => {
+        const response =
+          await request(app)
+            .post("/mock-exams/generate")
+            .send(
+              validPayload({
+                questionCount: 12,
+              })
+            );
+
+        expect(response.status).toBe(400);
+        expect(response.body.valid).toBe(false);
+        expect(dispatchSpy).not.toHaveBeenCalled();
+        expect(await countRequests()).toBe(0);
+      }
+    );
+
+    it(
       "US06-CT01 - aceita configuração válida (reteste SCRUM-152)",
       async () => {
         const response =

@@ -127,4 +127,62 @@ describe("processMockExamGeneration AI fallback", () => {
     expect(mocks.findReusable).not.toHaveBeenCalled();
     expect(mocks.markFailed).toHaveBeenCalledOnce();
   });
+
+  it("US07-CT18 - marca a solicitação como falha quando a IA está indisponível", async () => {
+    mocks.generateWithAI.mockRejectedValue(
+      new TransientAIError("CONNECTION", "Serviço de IA indisponível."),
+    );
+    mocks.findReusable.mockResolvedValue([]);
+
+    const result = await processMockExamGeneration("current-request", config);
+
+    expect(result.success).toBe(false);
+    expect(mocks.complete).not.toHaveBeenCalled();
+    expect(mocks.markFailed).toHaveBeenCalledWith(
+      "current-request",
+      expect.stringContaining("Serviço de IA indisponível."),
+    );
+  });
+
+  it("US07-CT19 - registra falha inesperada ao processar resposta sem lançar erro", async () => {
+    mocks.generateWithAI.mockResolvedValue({ questions: [] });
+    mocks.validate.mockImplementationOnce(() => {
+      throw new Error("Falha inesperada ao processar a resposta.");
+    });
+
+    await expect(
+      processMockExamGeneration("current-request", config),
+    ).resolves.toEqual(expect.objectContaining({
+      success: false,
+      status: "FAILED",
+      error: "Falha inesperada ao processar a resposta.",
+    }));
+    expect(mocks.complete).not.toHaveBeenCalled();
+    expect(mocks.markFailed).toHaveBeenCalledOnce();
+  });
+
+  it("US07-CT20 - conclui a geração quando todas as questões são válidas", async () => {
+    const exam = {
+      questions: Array.from(
+        { length: 10 },
+        (_, index) => cachedQuestion(index + 1),
+      ),
+    };
+    mocks.generateWithAI.mockResolvedValue(exam);
+
+    const result = await processMockExamGeneration("current-request", config);
+
+    expect(result).toEqual(expect.objectContaining({
+      success: true,
+      status: "COMPLETED",
+      exam,
+    }));
+    expect(mocks.validate).toHaveBeenCalledWith(exam, expect.anything());
+    expect(mocks.complete).toHaveBeenCalledWith(
+      "current-request",
+      "new",
+      exam,
+    );
+    expect(mocks.markFailed).not.toHaveBeenCalled();
+  });
 });

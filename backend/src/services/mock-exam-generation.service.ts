@@ -188,6 +188,15 @@ export async function findMockExamGenerationResult(
           difficulty: true,
           questionType: true,
           sourceArchivedQuestionId: true,
+          sourceArchivedQuestion: {
+            select: {
+              source: {
+                select: {
+                  sourceType: true,
+                },
+              },
+            },
+          },
           stimulusText: true,
           stimulusAssetPath: true,
           stimulusAltText: true,

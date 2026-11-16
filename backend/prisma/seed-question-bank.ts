@@ -85,6 +85,7 @@ async function main() {
         pdfPageNumber: item.pdfPageNumber,
         correctAlternative: item.correctAlternative,
         answerSource: item.answerSource,
+        ...(item.reviewStatus ? { reviewStatus: item.reviewStatus } : {}),
       };
 
       await prisma.archivedQuestion.upsert({
@@ -105,7 +106,7 @@ async function main() {
           sourceId,
           number: item.number,
           ...questionData,
-          reviewStatus: ArchiveReviewStatus.NEEDS_REVIEW,
+          reviewStatus: item.reviewStatus ?? ArchiveReviewStatus.NEEDS_REVIEW,
           alternatives: { create: alternatives },
         },
       });
@@ -113,7 +114,7 @@ async function main() {
   }
 
   console.log(
-    `Acervo atualizado: ${questionBankSources.length} fontes e ${items.length} questões (pendentes de revisão).`
+    `Acervo atualizado: ${questionBankSources.length} fontes e ${items.length} questões (status de revisão preservado).`
   );
 }
 

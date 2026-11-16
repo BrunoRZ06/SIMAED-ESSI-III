@@ -1,7 +1,9 @@
 import type { QuestionBankSeedItem } from "./question-bank.data.js";
 
 const sourceCode = "SAEPE_STYLE_ORIGINAL_3EM";
+const demonstrationSourceCode = "AUTHORIAL_DEMO_LP_D01_D02_3EM";
 let number = 0;
+let demonstrationNumber = 0;
 
 function item(
   disciplineCode: "PORTUGUESE" | "MATHEMATICS",
@@ -24,6 +26,31 @@ function item(
     pdfPageNumber: null,
     correctAlternative: correct,
     answerSource: "Gabarito proposto para questão autoral; recomenda-se revisão pedagógica.",
+    alternatives: choices.map((text, index) => ({ label: "ABCDE"[index]!, text })),
+  };
+}
+
+function demonstrationItem(
+  descriptorCode: "D01" | "D02",
+  stimulusText: string,
+  statement: string,
+  choices: [string, string, string, string, string],
+  correct: "A" | "B" | "C" | "D" | "E",
+): QuestionBankSeedItem {
+  demonstrationNumber += 1;
+  return {
+    sourceCode: demonstrationSourceCode,
+    number: demonstrationNumber,
+    itemCode: `AUT-P-${descriptorCode}-DEMO-${String(demonstrationNumber).padStart(2, "0")}`,
+    disciplineCode: "PORTUGUESE",
+    descriptorCode,
+    stimulusText,
+    statement,
+    pdfPageNumber: null,
+    correctAlternative: correct,
+    answerSource:
+      "Questão autoral demonstrativa; não corresponde a prova oficial. Gabarito conferido.",
+    reviewStatus: "REVIEWED",
     alternatives: choices.map((text, index) => ({ label: "ABCDE"[index]!, text })),
   };
 }
@@ -88,4 +115,17 @@ export const originalPracticeItems: QuestionBankSeedItem[] = [
   item("PORTUGUESE", "D19", "Uma criança observa o desenho e diz: “Olha o passarinho que encontrei no quintal!”", "O uso de “passarinho” no diminutivo expressa, nesse contexto, principalmente", ["carinho ou afeto", "tamanho necessariamente enorme", "desprezo pelo animal", "distância do quintal", "dúvida sobre a espécie"], "A"),
   item("PORTUGUESE", "D20", "Texto 1 — comunicado da prefeitura: “A nova ciclovia será inaugurada no sábado. O percurso de quatro quilômetros ligará a praça ao terminal.” Texto 2 — editorial: “A ciclovia é um avanço, mas sua utilidade dependerá da manutenção e da integração com outras rotas.”", "Como os textos abordam a ciclovia de maneiras diferentes?", ["O primeiro informa sobre a inauguração; o segundo avalia condições para que a obra funcione bem", "Os dois anunciam o cancelamento da obra", "O primeiro critica a ciclovia; o segundo apenas informa a data", "Os dois apresentam instruções para construir bicicletas", "O primeiro relata uma pesquisa; o segundo descreve um acidente"], "A"),
   item("PORTUGUESE", "D21", "Texto 1: “Proibir celulares durante toda a jornada escolar reduz distrações e favorece a concentração.” Texto 2: “O celular também pode ser ferramenta de pesquisa; seu uso orientado é mais útil que uma proibição total.”", "Qual diferença de posicionamento existe entre os textos?", ["O primeiro defende a proibição; o segundo prefere o uso orientado", "O primeiro apoia o uso livre; o segundo defende a proibição", "Ambos consideram o celular inútil em qualquer situação", "Ambos tratam apenas da compra de aparelhos", "O primeiro fala de pesquisa e o segundo de transporte"], "A"),
+
+  // Questões demonstrativas autorais, explicitamente separadas do acervo histórico.
+  demonstrationItem("D01", "O relatório da Secretaria de Educação informa que, entre março e junho, 18 escolas estaduais participaram do projeto de leitura. As atividades ocorreram nas bibliotecas das próprias escolas.", "Segundo o relatório, quantas escolas participaram do projeto?", ["8", "16", "18", "36", "81"], "C"),
+  demonstrationItem("D01", "A mostra científica ficará aberta ao público de 7 a 12 de agosto, das 9h às 17h, no Centro Cultural do município. A entrada será gratuita.", "Em que local a mostra científica será realizada?", ["Nas bibliotecas estaduais", "No Centro Cultural do município", "Na Secretaria de Educação", "Nas escolas participantes", "Na praça central"], "B"),
+  demonstrationItem("D01", "Em comunicado aos estudantes, a coordenação avisou que as inscrições para o clube de debate terminam na sexta-feira, 22 de setembro. O formulário deve ser entregue à professora de Língua Portuguesa.", "Até quando os estudantes podem se inscrever no clube de debate?", ["Até 15 de setembro", "Até 20 de setembro", "Até 21 de setembro", "Até 22 de setembro", "Até 29 de setembro"], "D"),
+  demonstrationItem("D01", "A pesquisa ouviu 240 jovens de três bairros. Desse total, 96 disseram que usam a bicicleta para chegar à escola, enquanto os demais utilizam ônibus, caminhada ou transporte familiar.", "Quantos jovens entrevistados afirmaram ir à escola de bicicleta?", ["96", "144", "204", "240", "336"], "A"),
+  demonstrationItem("D01", "A biblioteca do bairro informa que os livros emprestados podem ser devolvidos de segunda a sexta-feira, das 8h às 18h. Aos sábados, o atendimento ocorre somente pela manhã, até as 12h.", "Até que horário a biblioteca recebe devoluções aos sábados?", ["Às 8h", "Às 10h", "Às 12h", "Às 18h", "Não recebe devoluções"], "C"),
+
+  demonstrationItem("D02", "O grêmio estudantil criou um mural digital para divulgar eventos e projetos da escola. A ferramenta também permite que os alunos enviem sugestões à equipe responsável.", "No texto, a expressão “A ferramenta” retoma", ["o grêmio estudantil", "a equipe responsável", "o mural digital", "a escola", "as sugestões dos alunos"], "C"),
+  demonstrationItem("D02", "A pesquisadora entrevistou moradores que vivem perto do rio há mais de vinte anos. Eles descreveram as mudanças observadas na qualidade da água ao longo desse período.", "A palavra “Eles” substitui", ["os moradores entrevistados", "os pesquisadores", "os rios da região", "os períodos de observação", "os dados sobre a água"], "A"),
+  demonstrationItem("D02", "A escola implantou a coleta seletiva em todas as salas. Essa iniciativa foi acompanhada por rodas de conversa sobre a redução do lixo e o reaproveitamento de materiais.", "A expressão “Essa iniciativa” refere-se", ["às rodas de conversa realizadas na comunidade", "à implantação da coleta seletiva nas salas", "à redução do número de estudantes", "ao reaproveitamento de todos os materiais", "à construção de novas salas"], "B"),
+  demonstrationItem("D02", "Uma equipe de estudantes organizou uma feira de troca de livros. A atividade reuniu obras de diferentes gêneros e incentivou a leitura entre as turmas.", "No trecho, “A atividade” retoma", ["a organização das turmas", "a leitura de diferentes gêneros", "a feira de troca de livros", "a equipe de professores", "a reunião da comunidade"], "C"),
+  demonstrationItem("D02", "O observatório publicou um boletim sobre a qualidade do ar na cidade. O documento apresenta medições feitas em cinco pontos e recomenda ampliar as áreas verdes.", "A expressão “O documento” substitui", ["a cidade", "o observatório", "o boletim sobre a qualidade do ar", "as áreas verdes", "os cinco pontos de medição"], "C"),
 ];

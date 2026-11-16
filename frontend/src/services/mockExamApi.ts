@@ -85,6 +85,11 @@ export type GeneratedQuestionResult = {
   difficulty: "easy" | "medium" | "hard" | null;
   questionType: "previous" | "new" | "combined";
   sourceArchivedQuestionId: string | null;
+  sourceArchivedQuestion: {
+    source: {
+      sourceType: "HISTORICAL" | "ORIGINAL_PRACTICE";
+    };
+  } | null;
   stimulusText: string | null;
   stimulusAssetPath: string | null;
   stimulusAltText: string | null;

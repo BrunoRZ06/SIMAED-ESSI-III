@@ -36,7 +36,7 @@ export type AnswerKeyMaterial = MaterialContext & {
     correctAnswer: string;
     descriptor: { code: string; description: string };
     difficulty: "easy" | "medium" | "hard" | null;
-    origin: "Banco de questões" | "IA";
+    origin: "Banco de questões" | "Questão autoral demonstrativa" | "IA";
   }>;
   skills: Array<{
     code: string;
@@ -131,7 +131,11 @@ export function buildMockExamMaterials(
         correctAnswer: question.correctAnswer,
         descriptor,
         difficulty: question.difficulty,
-        origin: question.sourceArchivedQuestionId ? "Banco de questões" : "IA",
+        origin: question.sourceArchivedQuestion?.source.sourceType === "ORIGINAL_PRACTICE"
+          ? "Questão autoral demonstrativa"
+          : question.sourceArchivedQuestionId
+            ? "Banco de questões"
+            : "IA",
       };
     }),
     skills: Array.from(skills.values()),
