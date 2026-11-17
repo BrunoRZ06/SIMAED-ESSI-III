@@ -8,12 +8,21 @@ import {
   GenerationStatus,
 } from "../../generated/prisma/client.js";
 
+import type {
+  Prisma,
+} from "../../generated/prisma/client.js";
+
+type DatabaseClient =
+  | typeof prisma
+  | Prisma.TransactionClient;
+
 import type { MockExamConfigInput } from "../schemas/mock-exam.schema.js";
 
 export async function createMockExamGenerationRequest(
   config: MockExamConfigInput,
   configHash: string,
-  simulateFailure = false
+  simulateFailure = false,
+  client: DatabaseClient = prisma
 ) {
   if (simulateFailure) {
     throw new Error(
@@ -21,7 +30,7 @@ export async function createMockExamGenerationRequest(
     );
   }
 
-  return prisma.mockExamGenerationRequest.create({
+  return client.mockExamGenerationRequest.create({
     data: {
       disciplineCode:
         config.disciplineCode,
@@ -236,9 +245,10 @@ export async function findMockExamGenerationResult(
 
 export async function findRecentGenerationRequest(
   configHash: string,
-  since: Date
+  since: Date,
+  client: DatabaseClient = prisma
 ) {
-  return prisma.mockExamGenerationRequest.findFirst({
+  return client.mockExamGenerationRequest.findFirst({
     where: {
       configHash,
 

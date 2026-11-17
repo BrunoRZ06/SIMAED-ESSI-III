@@ -8,7 +8,28 @@ import {
   describe,
   expect,
   it,
+  vi,
 } from "vitest";
+
+const archive = vi.hoisted(() => ({
+  availableQuestions: 999,
+}));
+
+vi.mock(
+  "../src/services/archived-question-generation.service.js",
+  async (importOriginal) => {
+    const original =
+      await importOriginal<
+        typeof import("../src/services/archived-question-generation.service.js")
+      >();
+
+    return {
+      ...original,
+      countAvailableArchivedQuestions:
+        async () => archive.availableQuestions,
+    };
+  }
+);
 
 import { app } from "../src/app.js";
 import { prisma } from "../src/lib/prisma.js";
@@ -780,6 +801,40 @@ describe(
         expect(
           response.body.valid
         ).toBe(true);
+      }
+    );
+
+    it.each([
+      "previous",
+      "combined",
+    ])(
+      "US05-CT18 - rejeita tipo %s quando o acervo não tem questões suficientes",
+      async (
+        questionType
+      ) => {
+        archive.availableQuestions = 0;
+
+        try {
+          const response =
+            await request(app)
+              .post(
+                "/mock-exams/validate"
+              )
+              .send({
+                ...validPayload(),
+                questionType,
+              });
+
+          expect(
+            response.status
+          ).toBe(400);
+
+          expect(
+            response.body.valid
+          ).toBe(false);
+        } finally {
+          archive.availableQuestions = 999;
+        }
       }
     );
 

@@ -6,6 +6,8 @@ import type {
   MockExamConfigInput,
 } from "../schemas/mock-exam.schema.js";
 
+import { prisma } from "../lib/prisma.js";
+
 import {
   createMockExamGenerationRequest,
   findRecentGenerationRequest,
@@ -66,45 +68,64 @@ export async function orchestrateMockExamGeneration(
         DUPLICATE_WINDOW_MS
     );
 
-  const existingRequest =
-    await findRecentGenerationRequest(
-      configHash,
-      since
+  // A trava por configHash serializa requisições equivalentes simultâneas,
+  // evitando que duas passem pela verificação antes de qualquer gravação.
+  const result =
+    await prisma.$transaction(
+      async (tx) => {
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${configHash}))`;
+
+        const existingRequest =
+          await findRecentGenerationRequest(
+            configHash,
+            since,
+            tx
+          );
+
+        if (
+          existingRequest
+        ) {
+          return {
+            requestId:
+              existingRequest.requestId,
+
+            status:
+              existingRequest.status,
+
+            duplicate: true,
+          };
+        }
+
+        const request =
+          await createMockExamGenerationRequest(
+            config,
+            configHash,
+            simulateCreationFailure,
+            tx
+          );
+
+        return {
+          requestId:
+            request.requestId,
+
+          status:
+            request.status,
+
+          duplicate: false,
+        };
+      }
     );
 
   if (
-    existingRequest
+    result.duplicate
   ) {
-    return {
-      requestId:
-        existingRequest.requestId,
-
-      status:
-        existingRequest.status,
-
-      duplicate: true,
-    };
+    return result;
   }
 
-  const request =
-    await createMockExamGenerationRequest(
-      config,
-      configHash,
-      simulateCreationFailure
-    );
-
   void processMockExamGeneration(
-    request.requestId,
+    result.requestId,
     config
   );
 
-  return {
-    requestId:
-      request.requestId,
-
-    status:
-      request.status,
-
-    duplicate: false,
-  };
+  return result;
 }
