@@ -12,18 +12,21 @@ import type {
   AIClient,
 } from "./ai-client.js";
 
+// Gerar 10 questões pode levar mais de 30s; o limite por tentativa precisa
+// acomodar isso sem ultrapassar a espera de 5 minutos do aplicativo.
 const AI_TIMEOUT_MS =
-  30_000;
+  Number(process.env.GEMINI_TIMEOUT_MS) ||
+  90_000;
 
 const MAX_ATTEMPTS =
-  4;
+  3;
 
 const FALLBACK_MODEL =
   process.env.GEMINI_FALLBACK_MODEL ??
   "gemini-3.6-flash";
 
 const INITIAL_RETRY_DELAY_MS =
-  1_000;
+  Number(process.env.GEMINI_RETRY_DELAY_MS ?? 1_000);
 
 function sleep(
   milliseconds: number
@@ -123,12 +126,15 @@ export class GeminiAIClient
     try {
       return await this.generateWithModel(prompt, this.model);
     } catch (error) {
-      if (getStatusCode(error) !== 503 || this.model === FALLBACK_MODEL) {
+      if (
+        !(error instanceof TransientAIError) ||
+        this.model === FALLBACK_MODEL
+      ) {
         throw this.toUserFacingError(error);
       }
 
       console.warn(
-        `Modelo ${this.model} indisponível após ${MAX_ATTEMPTS} tentativas; alternando para ${FALLBACK_MODEL}.`,
+        `Modelo ${this.model} indisponível (${error.code}); alternando para ${FALLBACK_MODEL}.`,
       );
 
       try {
@@ -195,37 +201,29 @@ export class GeminiAIClient
           throw error;
         }
 
-        const retryable =
-          isRetryableError(
+        const transientCode =
+          getTransientErrorCode(
             error
           );
 
+        // Um timeout indica que o modelo está lento: repetir no mesmo modelo
+        // só consome o tempo de espera, então segue direto para o alternativo.
         if (
-          !retryable ||
+          transientCode ===
+          "TIMEOUT"
+        ) {
+          throw new TransientAIError(
+            "TIMEOUT",
+            this.getTransientErrorMessage("TIMEOUT"),
+          );
+        }
+
+        if (
+          !isRetryableError(error) ||
           attempt ===
             MAX_ATTEMPTS
         ) {
-          if (
-            error instanceof Error &&
-            (
-              error.name ===
-                "TimeoutError" ||
-              error.name ===
-                "AbortError"
-            )
-          ) {
-            throw new TransientAIError(
-              "TIMEOUT",
-              "Timeout na comunicação com a IA."
-            );
-          }
-
-          const transientCode = getTransientErrorCode(error);
           if (transientCode) {
-            if (getStatusCode(error) === 503) {
-              throw error;
-            }
-
             throw new TransientAIError(
               transientCode,
               this.getTransientErrorMessage(transientCode),
@@ -241,10 +239,12 @@ export class GeminiAIClient
             (attempt - 1);
 
         const jitter =
-          Math.floor(
-            Math.random() *
-              500
-          );
+          INITIAL_RETRY_DELAY_MS > 0
+            ? Math.floor(
+                Math.random() *
+                  500
+              )
+            : 0;
 
         await sleep(
           delay +
