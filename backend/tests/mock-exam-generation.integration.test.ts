@@ -13,25 +13,32 @@ import {
 } from "vitest";
 
 const dispatchSpy = vi.hoisted(() =>
-  vi.fn()
+  vi.fn().mockResolvedValue({
+    success: true,
+  })
 );
 
 vi.mock(
-  "../src/services/mock-exam-generator.service.js",
+  "../src/services/mock-exam-generation-processor.service.js",
+  () => ({
+    processMockExamGeneration:
+      (requestId: string, config: unknown) =>
+        dispatchSpy({ requestId, config }),
+  })
+);
+
+vi.mock(
+  "../src/services/archived-question-generation.service.js",
   async (importOriginal) => {
     const original =
       await importOriginal<
-        typeof import("../src/services/mock-exam-generator.service.js")
+        typeof import("../src/services/archived-question-generation.service.js")
       >();
-
-    dispatchSpy.mockImplementation(
-      original.dispatchMockExamGeneration
-    );
 
     return {
       ...original,
-      dispatchMockExamGeneration:
-        dispatchSpy,
+      countAvailableArchivedQuestions:
+        async () => 999,
     };
   }
 );
@@ -539,7 +546,7 @@ describe(
           validPayload({
             questionCount: 15,
             difficulty: "medium",
-            questionType: "previous",
+            questionType: "combined",
           });
 
         const response =
